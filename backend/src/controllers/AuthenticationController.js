@@ -3,11 +3,11 @@ const ADMIN = require('../models').Admin
 module.exports = {
   async login (req, res) {
     try {
-      const {username, password} = req.body
-      // console.log('user pass ==>', username, password)
+      const {email, password} = req.body
+      // console.log('user pass ==>', email, password)
       // console.log('ADMIN ==>', ADMIN)
       const admin = await ADMIN.findOne({
-        where: {username: username}
+        where: {email: email}
       })
       console.log('admin ==>', admin)
       if (!admin) {

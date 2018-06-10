@@ -5,7 +5,6 @@
       <v-form>
         <v-text-field
           v-model="admin.email"
-          :rules="emailRules"
           label="E-mail"
           required
         ></v-text-field>
@@ -38,7 +37,7 @@ export default {
     async login () {
       try {
         const response = await AuthenticationService.login({
-          username: this.admin.username,
+          email: this.admin.email,
           password: this.password
         })
         // this.admin['username'] = response.data.username
