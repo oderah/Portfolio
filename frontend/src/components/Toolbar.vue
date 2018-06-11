@@ -9,7 +9,7 @@
           </v-avatar>
         </v-btn>
       </v-toolbar-title>
-      <v-spacer></v-spacer>
+      <v-spacer />
       <v-toolbar-items>
         <v-btn flat>About</v-btn>
         <v-btn flat>Portfolio</v-btn>
