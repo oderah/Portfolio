@@ -6,7 +6,7 @@
     <!-- <br /> -->
     <v-layout row wrap fill-height>
       <v-flex xs4 v-for="project in projects" :key="project.title">
-        <v-card style="margin: 5px;">
+        <v-card style="margin: 5px;" class="card">
           <!-- Card Media -->
           <v-card-media
             :src="project.src"
@@ -98,6 +98,10 @@ export default {
   }
   h1{
     color: white;
+  }
+  .card:hover {
+    transform: scale(1.05);
+    transition-duration: 0.1s;
   }
   .project-title {
     color: #CFD8DC;
