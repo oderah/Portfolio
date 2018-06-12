@@ -2,7 +2,8 @@
   <v-footer absolute app dark class="pa-3">
     <v-btn
       flat
-      @click="gotoAdmin">
+      @click="gotoAdmin"
+      v-if="!this.$store.state.admin">
       Admin
     </v-btn>
     <v-spacer></v-spacer>

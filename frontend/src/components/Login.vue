@@ -8,7 +8,7 @@
           </div>
           <v-form slot="text">
             <v-text-field
-              v-model="admin.email"
+              v-model="email"
               label="E-mail"
               required
               autofocus>
@@ -39,7 +39,7 @@ import Panel from '@/components/Panel'
 export default {
   data () {
     return {
-      admin: {username: '', email: ''},
+      email: '',
       password: ''
     }
   },
@@ -50,17 +50,24 @@ export default {
     async login () {
       try {
         const response = await AuthenticationService.login({
-          email: this.admin.email,
+          email: this.email,
           password: this.password
         })
         // this.admin['username'] = response.data.username
         // this.admin['email'] = response.data.email
-        this.admin = response.data
+        // this.admin = response.data
+
+        this.$store.dispatch('setAdmin', {
+          email: response.data.admin.email,
+          username: response.data.admin.username
+        })
+
+        this.$router.push('/')
       } catch (err) {
         console.log(err)
       }
 
-      console.log(this.admin)
+      console.log(this.$store.state.admin)
     }
   },
   mounted () {

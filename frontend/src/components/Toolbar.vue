@@ -14,6 +14,15 @@
         <v-btn flat>About</v-btn>
         <v-btn flat>Portfolio</v-btn>
         <v-btn flat>Contact</v-btn>
+        <v-menu v-if="this.$store.state.admin">
+          <v-btn flat slot="activator">
+            <v-avatar
+              class="title cyan"
+              size="40px">
+              <v-icon size="30px">verified_user</v-icon>
+            </v-avatar>
+          </v-btn>
+        </v-menu>
       </v-toolbar-items>
   </v-toolbar>
 </template>
