@@ -21,7 +21,7 @@ fs.readdirSync(__dirname)
     const model = sequelize.import(path.join(__dirname, file))
     console.log('model ==> ', model.name)
     db[model.name] = model
-    db.Admin = model
+    // db.Admin = model
   })
 
 db.sequelize = sequelize
