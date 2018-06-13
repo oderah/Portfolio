@@ -1,11 +1,12 @@
 module.exports = (sequelize, DataTypes) => {
-  const Progam = sequelize.define('Progam', {
+  const Program = sequelize.define('Program', {
     institution: DataTypes.STRING,
     title: DataTypes.STRING,
     credential: DataTypes.STRING,
     start: DataTypes.DATEONLY,
-    end: DataTypes.DATEONLY
+    end: DataTypes.DATEONLY,
+    ProfileId: DataTypes.INTEGER
   })
 
-  return Progam
+  return Program
 }
