@@ -40,4 +40,10 @@ export default {
 h1 {
   color: #CFD8DC;
 }
+.cyan-gradient {
+  background: radial-gradient(circle at top left, #006064, #0097A7, cyan, #0097A7, #90A4AE);
+}
+.pink-gradient {
+  background: radial-gradient(circle at top left, #880E4F, #9C3F70, #D45699, #9C3F70, #880E4F)
+}
 </style>

@@ -3,12 +3,12 @@
     <br >
     <!-- Name -->
     <v-flex xs12>
-      <Panel class="pink darken-4 tech">
+      <Panel _class="pink-gradient tech">
         <v-container slot="title" class="name">
           <h1>{{profile.firstName}} {{profile.lastName}}</h1>
         </v-container>
-        <v-container slot="actions">
-          <v-layout row wrap class="tech-names">
+        <v-container slot="text">
+          <v-layout row wrap>
             <v-flex v-for="title in profile.titles" :key="title.id">
               <h2>{{title.title}}</h2>
             </v-flex>
@@ -50,9 +50,9 @@
     <br >
     <!-- Skill -->
     <v-flex xs12>
-      <Panel>
+      <Panel _class="pink-gradient">
         <v-container slot="title">
-          <h2 class="name">Skills</h2>
+          <h2 class="name tech-names">Skills</h2>
         </v-container>
         <v-layout row wrap slot="text">
           <v-flex xs1 offset-xs1 v-for="skill in profile.skills" :key="skill.id">
@@ -66,9 +66,9 @@
     <br >
     <!-- Tech -->
     <v-flex xs12>
-      <Panel class="tech">
+      <Panel class="education">
         <v-container slot="title">
-          <h2 class="name tech-names">Technologies</h2>
+          <h2 class="name">Technologies</h2>
         </v-container>
         <v-layout row wrap slot="text">
           <v-flex xs1 offset-xs1 v-for="tech in profile.techs" :key="tech.id">
@@ -82,9 +82,9 @@
     <br >
     <!-- About -->
     <v-flex xs12>
-      <Panel>
+      <Panel _class="pink-gradient">
         <v-container slot="title">
-          <h2 class="name">A little about Me</h2>
+          <h2 class="name tech-names">A little about Me</h2>
         </v-container>
         <v-layout column wrap slot="text">
           <v-flex xs10 offset-xs1 v-for="about in profile.abouts" :key="about.id">
@@ -135,6 +135,10 @@ export default {
   ._card {
     /* border-radius: 50%; */
     box-shadow: 0 2px 20px 0;
+  }
+  ._card:hover {
+    transform: scale(1.025);
+    transition-duration: 0.2s;
   }
   .ed {
     color: #CFD8DC;
