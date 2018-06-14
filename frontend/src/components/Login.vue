@@ -2,7 +2,7 @@
   <div>
     <v-container>
       <v-flex xs6 offset-xs3>
-        <Panel>
+        <Panel _class="pink darken-4">
           <div slot="title">
             <h1>Admin</h1>
           </div>
@@ -21,7 +21,7 @@
             </v-text-field>
             <v-btn
               dark
-              class="cyan"
+              class="pink darken-4"
               @click="login"
             >
               Login
@@ -78,7 +78,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  h1 {
-    color: #CFD8DC;
-  }
+
 </style>

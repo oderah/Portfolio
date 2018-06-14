@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Landing from '@/components/Landing'
 import Login from '@/components/Login'
+import About from '@/components/About'
 
 Vue.use(Router)
 
@@ -16,6 +17,11 @@ export default new Router({
       path: '/admin/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: About
     }
   ]
 })

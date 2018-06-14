@@ -37,4 +37,7 @@ export default {
   background-size: cover;
   /* background: radial-gradient(circle at top left, #263238, #607D8B, #ECEFF1, #90A4AE, #607D8B) */
 }
+h1 {
+  color: #CFD8DC;
+}
 </style>

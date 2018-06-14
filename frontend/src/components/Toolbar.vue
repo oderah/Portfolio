@@ -11,7 +11,7 @@
       </v-toolbar-title>
       <v-spacer />
       <v-toolbar-items>
-        <v-btn flat>About</v-btn>
+        <v-btn flat @click="goAbout">About</v-btn>
         <v-btn flat>Portfolio</v-btn>
         <v-btn flat>Contact</v-btn>
         <v-menu v-if="this.$store.state.admin">
@@ -37,6 +37,9 @@ export default {
   methods: {
     goHome () {
       this.$router.push({path: '/'})
+    },
+    goAbout () {
+      this.$router.push({path: '/about'})
     }
   }
 }
