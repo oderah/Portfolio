@@ -1,15 +1,23 @@
 <template>
   <v-container>
+    <!-- Profile Pic -->
+    <v-avatar
+      size="150px"
+      class="white profile-pic">
+      Pic
+    </v-avatar>
     <br >
     <!-- Name -->
     <v-flex xs12>
-      <Panel _class="pink-gradient tech">
+      <!-- <Panel _class="pink-gradient tech"> -->
+      <Panel class="header">
         <v-container slot="title" class="name">
           <h1>{{profile.firstName}} {{profile.lastName}}</h1>
         </v-container>
         <v-container slot="text">
-          <v-layout row wrap>
+          <v-layout row wrap class="tech-names">
             <v-flex v-for="title in profile.titles" :key="title.id">
+              <hr >
               <h2>{{title.title}}</h2>
             </v-flex>
           </v-layout>
@@ -50,13 +58,13 @@
     <br >
     <!-- Skill -->
     <v-flex xs12>
-      <Panel _class="pink-gradient">
+      <Panel class="pink-gradient">
         <v-container slot="title">
           <h2 class="name tech-names">Skills</h2>
         </v-container>
         <v-layout row wrap slot="text">
           <v-flex xs1 offset-xs1 v-for="skill in profile.skills" :key="skill.id">
-            <v-container>
+            <v-container class="tech-names">
               <h3>{{skill.skill}}</h3>
             </v-container>
           </v-flex>
@@ -66,9 +74,10 @@
     <br >
     <!-- Tech -->
     <v-flex xs12>
-      <Panel class="education">
+      <!-- <Panel class="education"> -->
+      <Panel class="header">
         <v-container slot="title">
-          <h2 class="name">Technologies</h2>
+          <h2 class="name tech-names">Technologies</h2>
         </v-container>
         <v-layout row wrap slot="text">
           <v-flex xs1 offset-xs1 v-for="tech in profile.techs" :key="tech.id">
@@ -82,14 +91,15 @@
     <br >
     <!-- About -->
     <v-flex xs12>
-      <Panel _class="pink-gradient">
+      <!-- <Panel _class="pink-gradient"> -->
+      <Panel>
         <v-container slot="title">
-          <h2 class="name tech-names">A little about Me</h2>
+          <h2 class="name">A little about Me</h2>
         </v-container>
         <v-layout column wrap slot="text">
-          <v-flex xs10 offset-xs1 v-for="about in profile.abouts" :key="about.id">
+          <v-flex xs10 v-for="about in profile.abouts" :key="about.id">
             <v-container class="paragraph">
-              <h4>{{about.paragraph}}</h4>
+              <h3>{{about.paragraph}} Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</h3>
             </v-container>
           </v-flex>
         </v-layout>
@@ -112,6 +122,7 @@ export default {
   },
   async mounted () {
     this.profile = (await this.getProfile()).data.profile
+    window.scrollTo(0, 0)
   },
   components: {
     Panel
@@ -132,6 +143,13 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  hr {
+    border: 0;
+    width: 70%;
+    margin: auto;
+    border-top: 1px dashed #CFD8DC;
+    padding-bottom: 5px;
+  }
   ._card {
     /* border-radius: 50%; */
     box-shadow: 0 2px 20px 0;
@@ -149,6 +167,9 @@ export default {
   .education {
     background: radial-gradient(circle at top left, #006064, #0097A7, cyan, #0097A7, #90A4AE);
   }
+  .header {
+    background-color: #212121
+  }
   .name {
     text-align: right;
     font-size: 20px;
@@ -156,6 +177,18 @@ export default {
   }
   .paragraph {
     text-align: left;
+  }
+  .profile-pic {
+    position: fixed;
+    top: 10vh;
+    left: 1vw;
+    z-index: 2;
+    box-shadow: 0 0 15px 5px black;
+    background: url('../assets/landing.svg');
+  }
+  .profile-pic:hover {
+    transform: scale(1.025);
+    transition-duration: 0.2s;
   }
   .tech {
     /* background: linear-gradient(to right, #880E4F, #9C3F70, #D45699, #9C3F70); */
