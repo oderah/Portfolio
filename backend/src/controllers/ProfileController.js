@@ -44,6 +44,8 @@ async function setProfile (req, res) {
   }
 }
 async function setSkills (skills, profile) {
+  // clear db table
+  await SKILL.destroy({where: {}, truncate: true})
   await skills.forEach(async skill => {
     // var _skill = await SKILL.findOne({
     //   where: skill
@@ -59,6 +61,7 @@ async function setSkills (skills, profile) {
 }
 
 async function setTitles (titles, profile) {
+  await TITLE.destroy({where: {}, truncate: true})
   await titles.forEach(async title => {
     // var _title = await TITLE.findOne({
     //   where: title
@@ -74,6 +77,7 @@ async function setTitles (titles, profile) {
 }
 
 async function setPrograms (programs, profile) {
+  await PROGRAM.destroy({where: {}, truncate: true})
   await programs.forEach(async program => {
     // var _program = await PROGRAM.findOne({
     //   where: program
@@ -89,6 +93,7 @@ async function setPrograms (programs, profile) {
 }
 
 async function setTechs (techs, profile) {
+  await TECH.destroy({where: {}, truncate: true})
   await techs.forEach(async tech => {
     // var _tech = await TECH.findOne({
     //   where: tech
@@ -104,6 +109,7 @@ async function setTechs (techs, profile) {
 }
 
 async function setAbouts (abouts, profile) {
+  await ABOUT.destroy({where: {}, truncate: true})
   await abouts.forEach(async about => {
     // var _about = await ABOUT.findOne({
     //   where: about
