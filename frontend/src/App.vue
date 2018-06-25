@@ -37,13 +37,28 @@ export default {
   background-size: cover;
   /* background: radial-gradient(circle at top left, #263238, #607D8B, #ECEFF1, #90A4AE, #607D8B) */
 }
+hr {
+  border: 0;
+  width: 70%;
+  margin: auto;
+  border-top: 1px dashed #CFD8DC;
+  padding-bottom: 5px;
+}
 h1 {
   color: #CFD8DC;
 }
 .cyan-gradient {
   background: radial-gradient(circle at top left, #006064, #0097A7, cyan, #0097A7, #90A4AE);
 }
+.name {
+  text-align: right;
+  font-size: 20px;
+  font-family: cursive;
+}
 .pink-gradient {
   background: radial-gradient(circle at top left, #880E4F, #9C3F70, #D45699, #9C3F70, #880E4F)
+}
+.tech-names {
+  color: #CFD8DC;
 }
 </style>

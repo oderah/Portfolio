@@ -6,6 +6,9 @@
     <v-card-text>
       <slot name="text"></slot>
     </v-card-text>
+    <v-card-actions>
+      <slot name="actions"></slot>
+    </v-card-actions>
   </v-card>
 </template>
 

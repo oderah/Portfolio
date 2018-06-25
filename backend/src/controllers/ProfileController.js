@@ -24,13 +24,13 @@ async function getProfile (req, res) {
   }
 }
 async function setProfile (req, res) {
+  console.log(req.body)
   try {
     var profile = await PROFILE.findById(1)
     if (!profile) {
       profile = await PROFILE.create(req.body.profile)
-    } else {
-      await profile.update(req.body.profile)
     }
+    if (req.body.profile) await profile.update(req.body.profile)
     if (req.body.skills) await setSkills(req.body.skills, profile)
     if (req.body.titles) await setTitles(req.body.titles, profile)
     if (req.body.programs) await setPrograms(req.body.programs, profile)
