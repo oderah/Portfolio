@@ -45,61 +45,76 @@ async function setProfile (req, res) {
 }
 async function setSkills (skills, profile) {
   await skills.forEach(async skill => {
-    var _skill = await SKILL.findOne({
-      where: skill
+    // var _skill = await SKILL.findOne({
+    //   where: skill
+    // })
+    // if (!_skill) {
+    //   _skill = await SKILL.create(skill)
+    // }
+    // await profile.addSkill(_skill.id)
+    SKILL.findOrCreate({where: skill}).spread(async (_skill, meta) => {
+      await profile.addSkill(_skill.id)
     })
-    if (!_skill) {
-      _skill = await SKILL.create(skill)
-    }
-    await profile.addSkill(_skill.id)
   })
 }
 
 async function setTitles (titles, profile) {
   await titles.forEach(async title => {
-    var _title = await TITLE.findOne({
-      where: title
+    // var _title = await TITLE.findOne({
+    //   where: title
+    // })
+    // if (!_title) {
+    //   _title = await TITLE.create(title)
+    // }
+    // await profile.addTitle(_title.id)
+    TITLE.findOrCreate({where: title}).spread(async (_title, meta) => {
+      await profile.addTitle(_title.id)
     })
-    if (!_title) {
-      _title = await TITLE.create(title)
-    }
-    await profile.addTitle(_title.id)
   })
 }
 
 async function setPrograms (programs, profile) {
   await programs.forEach(async program => {
-    var _program = await PROGRAM.findOne({
-      where: program
+    // var _program = await PROGRAM.findOne({
+    //   where: program
+    // })
+    // if (!_program) {
+    //   _program = await PROGRAM.create(program)
+    // }
+    // await profile.addProgram(_program.id)
+    PROGRAM.findOrCreate({where: program}).spread(async (_program, meta) => {
+      await profile.addProgram(_program.id)
     })
-    if (!_program) {
-      _program = await PROGRAM.create(program)
-    }
-    await profile.addProgram(_program.id)
   })
 }
 
 async function setTechs (techs, profile) {
   await techs.forEach(async tech => {
-    var _tech = await TECH.findOne({
-      where: tech
+    // var _tech = await TECH.findOne({
+    //   where: tech
+    // })
+    // if (!_tech) {
+    //   _tech = await TECH.create(tech)
+    // }
+    // await profile.addTech(_tech.id)
+    TECH.findOrCreate({where: tech}).spread(async (_tech, meta) => {
+      await profile.addTech(_tech.id)
     })
-    if (!_tech) {
-      _tech = await TECH.create(tech)
-    }
-    await profile.addTech(_tech.id)
   })
 }
 
 async function setAbouts (abouts, profile) {
   await abouts.forEach(async about => {
-    var _about = await ABOUT.findOne({
-      where: about
+    // var _about = await ABOUT.findOne({
+    //   where: about
+    // })
+    // if (!_about) {
+    //   _about = await ABOUT.create(about)
+    // }
+    // await profile.addAbout(_about.id)
+    ABOUT.findOrCreate({where: about}).spread(async (_about, meta) => {
+      await profile.addAbout(_about.id)
     })
-    if (!_about) {
-      _about = await ABOUT.create(about)
-    }
-    await profile.addAbout(_about.id)
   })
 }
 
