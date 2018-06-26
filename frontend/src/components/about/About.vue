@@ -8,7 +8,7 @@
     </v-avatar>
     <br >
     <!-- Name -->
-    <Name :profile="profile"/>
+    <Name :profile="profile" @update="reloadProfile"/>
     <br >
     <!-- Education -->
     <Education :profile="profile"/>
@@ -33,9 +33,6 @@
           </v-flex>
         </v-layout>
         <v-container slot="text" v-if="edit">
-          <!-- <textarea v-for="about in profile.abouts" :key="about.id">
-
-          </textarea> -->
           <textarea rows="10" v-model="abouts">
           </textarea>
         </v-container>
@@ -83,24 +80,39 @@ export default {
     }
   },
   async mounted () {
-    this.profile = (await this.getProfile()).data.profile
+    this.reloadProfile()
     window.scrollTo(0, 0)
   },
   components: {
     Panel, Name, Education, Skills, Technologies
   },
   methods: {
+    async reloadProfile () {
+      this.profile = (await this.getProfile()).data.profile
+      console.log('reloadProfile, profile: ', this.profile)
+    },
     async getProfile () {
       console.log('getProfile')
       const profile = await ProfileService.getProfile()
       return profile
     },
+    // async update (payload) {
+    //   console.log('about update ==> ', payload)
+    //   const response = await ProfileService.setProfile(payload)
+    //   console.log('about update, response: ', response)
+    //   if (response.msg == true) {
+    //     this.reloadProfile()
+    //   }
+    //   return response
+    // },
     async update (abouts) {
       const response = await ProfileService.setProfile({abouts: abouts})
+      if (response.data.msg === true) {
+        this.reloadProfile()
+      }
       return response
     },
     editText () {
-      console.log(this.profile.abouts[1])
       this.profile.abouts.forEach(about => {
         this.abouts += about.paragraph + '\n\n'
       })
@@ -113,7 +125,7 @@ export default {
         payload.push({'paragraph': about})
       })
       const response = await this.update(payload)
-      this.profile = (await this.getProfile()).data.profile
+      // this.profile = (await this.getProfile()).data.profile
       console.log(response)
       this.done()
     },
@@ -127,9 +139,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  textarea {
-    width: 100%;
-  }
   .paragraph {
     text-align: left;
   }

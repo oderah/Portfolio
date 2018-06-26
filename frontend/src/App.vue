@@ -47,6 +47,10 @@ hr {
 h1 {
   color: #CFD8DC;
 }
+textarea {
+  width: 100%;
+  background-color: white;
+}
 .cyan-gradient {
   background: radial-gradient(circle at top left, #006064, #0097A7, cyan, #0097A7, #90A4AE);
 }

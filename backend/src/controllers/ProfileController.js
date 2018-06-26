@@ -16,6 +16,8 @@ async function getProfile (req, res) {
     profile['abouts'] = await _profile.getAbouts()
     profile['programs'] = await _profile.getPrograms()
 
+    console.log('TITLES =========== ', profile['titles'])
+
     res.send({
       profile: {..._profile.toJSON(), ...profile}
     })
@@ -36,6 +38,7 @@ async function setProfile (req, res) {
     if (req.body.programs) await setPrograms(req.body.programs, profile)
     if (req.body.techs) await setTechs(req.body.techs, profile)
     if (req.body.abouts) await setAbouts(req.body.abouts, profile)
+
     res.send({
       msg: true
     })
@@ -44,6 +47,7 @@ async function setProfile (req, res) {
   }
 }
 async function setSkills (skills, profile) {
+  console.log('backend setSkills')
   // clear db table
   await SKILL.destroy({where: {}, truncate: true})
   await skills.forEach(async skill => {
@@ -61,6 +65,7 @@ async function setSkills (skills, profile) {
 }
 
 async function setTitles (titles, profile) {
+  console.log('backend setTitles')
   await TITLE.destroy({where: {}, truncate: true})
   await titles.forEach(async title => {
     // var _title = await TITLE.findOne({
@@ -77,6 +82,7 @@ async function setTitles (titles, profile) {
 }
 
 async function setPrograms (programs, profile) {
+  console.log('backend setPrograms')
   await PROGRAM.destroy({where: {}, truncate: true})
   await programs.forEach(async program => {
     // var _program = await PROGRAM.findOne({
@@ -93,6 +99,7 @@ async function setPrograms (programs, profile) {
 }
 
 async function setTechs (techs, profile) {
+  console.log('backend setTechs')
   await TECH.destroy({where: {}, truncate: true})
   await techs.forEach(async tech => {
     // var _tech = await TECH.findOne({
@@ -109,6 +116,7 @@ async function setTechs (techs, profile) {
 }
 
 async function setAbouts (abouts, profile) {
+  console.log('backend setAbouts')
   await ABOUT.destroy({where: {}, truncate: true})
   await abouts.forEach(async about => {
     // var _about = await ABOUT.findOne({

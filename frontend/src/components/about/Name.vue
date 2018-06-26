@@ -5,31 +5,92 @@
       <v-container slot="title" class="name">
         <h1>{{profile.firstName}} {{profile.lastName}}</h1>
       </v-container>
-      <v-container slot="text">
+      <v-container slot="text" v-if="!edit" >
         <v-layout row wrap class="tech-names">
-          <v-flex v-for="title in profile.titles" :key="title.id">
-            <hr >
-            <h2>{{title.title}}</h2>
+          <v-flex class="title" v-for="title in profile.titles" :key="title.id">
+            <!-- <hr > -->
+            <span>{{title.title}} •</span>
           </v-flex>
         </v-layout>
       </v-container>
-      <v-flex xs1 offset-xs11 slot="actions" v-if="this.$store.state.admin">
-        <v-btn fab small>
-          <v-icon size="20px">edit</v-icon>
-        </v-btn>
-      </v-flex>
+      <v-container slot="text" v-if="edit">
+        <textarea rows="2" v-model="titles">
+        </textarea>
+      </v-container>
+      <v-layout row slot="actions" v-if="this.$store.state.admin">
+        <!-- Edit button -->
+        <v-flex xs1 offset-xs11>
+          <v-btn fab small @click="editTitles" v-if="!edit">
+            <v-icon size="20px">edit</v-icon>
+          </v-btn>
+        </v-flex>
+        <!-- Cancel button -->
+        <v-flex xs1>
+          <v-btn fab small dark color="pink" @click="done" v-if="edit">
+            <v-icon size="20px">cancel</v-icon>
+          </v-btn>
+        </v-flex>
+        <!-- Save button -->
+        <v-flex xs1>
+          <v-btn fab small dark color="cyan" @click="saveTitles" v-if="edit">
+            <v-icon size="20px">save</v-icon>
+          </v-btn>
+        </v-flex>
+      </v-layout>
     </Panel>
   </v-flex>
 </template>
 
 <script>
 import Panel from '@/components/Panel'
+import ProfileService from '@/services/ProfileService'
 export default {
+  data () {
+    return {
+      titles: '',
+      edit: false
+    }
+  },
   components: {
     Panel
   },
   props: {
     profile: Object
+  },
+  methods: {
+    editTitles () {
+      console.log('editTitles')
+      this.profile.titles.forEach(title => {
+        this.titles += title.title + ', '
+      })
+      this.titles = this.titles.substring(0, this.titles.length - 2)
+      console.log(this.titles)
+      this.edit = true
+    },
+    async update (titles) {
+      const response = await ProfileService.setProfile({titles: titles})
+      if (response.data.msg === true) {
+        setTimeout(async () => {
+          await this.$emit('update')
+        }, 100)
+        this.done()
+      }
+      return response
+    },
+    async saveTitles () {
+      const newTitles = this.titles.trim().split(', ')
+      let payload = []
+      newTitles.forEach(title => {
+        payload.push({'title': title})
+      })
+
+      const response = await this.update(payload)
+      console.log('response savTitles : ', response)
+    },
+    done () {
+      this.titles = ''
+      this.edit = false
+    }
   }
 }
 </script>
@@ -38,5 +99,10 @@ export default {
 <style scoped>
   .header {
     background-color: #212121
+  }
+  .title {
+    font-weight: lighter;
+    margin: 2px;
+    padding: 5px;
   }
 </style>
