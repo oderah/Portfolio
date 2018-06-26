@@ -58,6 +58,7 @@ textarea {
   text-align: right;
   font-size: 20px;
   font-family: cursive;
+  /* text-shadow: 2px 3px grey; */
 }
 .pink-gradient {
   background: radial-gradient(circle at top left, #880E4F, #9C3F70, #D45699, #9C3F70, #880E4F)

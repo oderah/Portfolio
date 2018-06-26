@@ -14,7 +14,7 @@
     <Education :profile="profile"/>
     <br >
     <!-- Skills -->
-    <Skills :profile="profile"/>
+    <Skills :profile="profile" @update="reloadProfile"/>
     <br >
     <!-- Technologies -->
     <Technologies :profile="profile"/>

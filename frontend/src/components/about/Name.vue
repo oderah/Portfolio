@@ -59,7 +59,6 @@ export default {
   },
   methods: {
     editTitles () {
-      console.log('editTitles')
       this.profile.titles.forEach(title => {
         this.titles += title.title + ', '
       })
