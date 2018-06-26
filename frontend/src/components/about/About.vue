@@ -17,7 +17,7 @@
     <Skills :profile="profile" @update="reloadProfile"/>
     <br >
     <!-- Technologies -->
-    <Technologies :profile="profile"/>
+    <Technologies :profile="profile" @update="reloadProfile"/>
     <br >
     <!-- About -->
     <v-flex xs12>

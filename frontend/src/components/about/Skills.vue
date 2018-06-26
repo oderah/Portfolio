@@ -83,7 +83,7 @@ export default {
       })
 
       const response = await this.update(payload)
-      console.log('response savTitles : ', response)
+      console.log('response savSkills : ', response)
     },
     done () {
       this.skills = ''
