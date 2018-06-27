@@ -17,23 +17,17 @@
       </v-container>
       <v-layout row slot="actions" v-if="this.$store.state.admin">
         <!-- Edit button -->
-        <v-flex xs1 offset-xs11>
-          <v-btn fab small @click="editTechs" v-if="!edit">
-            <v-icon size="20px">edit</v-icon>
-          </v-btn>
-        </v-flex>
+        <v-btn class="save" fab small @click="editTechs" v-if="!edit">
+          <v-icon size="20px">edit</v-icon>
+        </v-btn>
         <!-- Cancel button -->
-        <v-flex xs1>
-          <v-btn fab small dark color="pink" @click="done" v-if="edit">
-            <v-icon size="20px">cancel</v-icon>
-          </v-btn>
-        </v-flex>
+        <v-btn class="cancel" fab small dark color="pink" @click="done" v-if="edit">
+          <v-icon size="20px">cancel</v-icon>
+        </v-btn>
         <!-- Save button -->
-        <v-flex xs1>
-          <v-btn fab small dark color="cyan" @click="saveTechs" v-if="edit">
-            <v-icon size="20px">save</v-icon>
-          </v-btn>
-        </v-flex>
+        <v-btn class="save" fab small dark color="cyan" @click="saveTechs" v-if="edit">
+          <v-icon size="20px">save</v-icon>
+        </v-btn>
       </v-layout>
     </Panel>
   </v-flex>

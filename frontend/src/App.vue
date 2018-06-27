@@ -66,4 +66,22 @@ textarea {
 .tech-names {
   color: #CFD8DC;
 }
+.cancel, .save, .add {
+  position: absolute;
+}
+.cancel {
+  /* top: 89%; */
+  bottom: 10px;
+  left: 90%;
+}
+.save {
+  /* top: 89%; */
+  bottom: 10px;
+  left: 95%;
+}
+.add {
+  /* top: 89%; */
+  bottom: 10px;
+  left: 85%;
+}
 </style>
