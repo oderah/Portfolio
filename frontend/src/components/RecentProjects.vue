@@ -1,9 +1,8 @@
 <template>
   <v-container grid-list-md>
-    <h1>Recent Projects</h1>
-    <!-- <br /> -->
-    <hr />
-    <!-- <br /> -->
+    <v-container class="name" style="textAlign: center;">
+      <h1>Recent Projects</h1>
+    </v-container>
     <v-layout row wrap fill-height>
       <v-flex xs4 v-for="project in projects" :key="project.title">
         <v-card style="margin: 5px;" class="card">

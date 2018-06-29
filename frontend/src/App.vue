@@ -43,13 +43,6 @@ export default {
   background-size: cover;
   /* background: radial-gradient(circle at top left, #263238, #607D8B, #ECEFF1, #90A4AE, #607D8B) */
 }
-hr {
-  border: 0;
-  width: 70%;
-  margin: auto;
-  border-top: 1px dashed #CFD8DC;
-  padding-bottom: 5px;
-}
 h1 {
   color: #CFD8DC;
 }

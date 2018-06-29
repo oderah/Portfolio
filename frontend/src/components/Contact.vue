@@ -13,7 +13,7 @@
         <h1>Contact Info</h1>
       </v-container>
       <!-- Text -->
-      <!-- if edit -->
+      <!-- if not edit -->
       <v-container slot="text" v-if="!edit">
         <v-layout column>
           <!-- list -->
@@ -42,7 +42,7 @@
           </v-list>
         </v-layout>
       </v-container>
-      <!-- if not edit -->
+      <!-- if edit -->
       <v-container slot="text" v-if="edit">
         <!-- Main form -->
         <v-form class="white">
