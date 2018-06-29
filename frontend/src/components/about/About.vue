@@ -90,15 +90,6 @@ export default {
       const profile = await ProfileService.getProfile()
       return profile
     },
-    // async update (payload) {
-    //   console.log('about update ==> ', payload)
-    //   const response = await ProfileService.setProfile(payload)
-    //   console.log('about update, response: ', response)
-    //   if (response.msg == true) {
-    //     this.reloadProfile()
-    //   }
-    //   return response
-    // },
     async update (abouts) {
       const response = await ProfileService.setProfile({abouts: abouts})
       if (response.data.msg === true) {
@@ -119,7 +110,6 @@ export default {
         payload.push({'paragraph': about})
       })
       const response = await this.update(payload)
-      // this.profile = (await this.getProfile()).data.profile
       console.log(response)
       this.done()
     },
@@ -135,18 +125,6 @@ export default {
 <style scoped>
   .paragraph {
     text-align: left;
-  }
-  .profile-pic {
-    position: fixed;
-    top: 10vh;
-    left: 1vw;
-    z-index: 2;
-    box-shadow: 0 0 15px 5px black;
-    background: url('../../assets/landing.svg');
-  }
-  .profile-pic:hover {
-    transform: scale(1.025);
-    transition-duration: 0.2s;
   }
   .tech {
     /* background: linear-gradient(to right, #880E4F, #9C3F70, #D45699, #9C3F70); */

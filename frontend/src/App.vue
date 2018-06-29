@@ -90,4 +90,17 @@ textarea {
   bottom: 10px;
   left: 85%;
 }
+.profile-pic {
+  position: fixed;
+  top: 10vh;
+  /* left: 1vw; */
+  right: 0;
+  z-index: 2;
+  box-shadow: 0 0 15px 5px black;
+  background: url('./assets/landing.svg');
+}
+.profile-pic:hover {
+  transform: scale(1.025);
+  transition-duration: 0.2s;
+}
 </style>

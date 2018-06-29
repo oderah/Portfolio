@@ -13,7 +13,7 @@
       <v-toolbar-items>
         <v-btn flat @click="goAbout">About</v-btn>
         <v-btn flat>Portfolio</v-btn>
-        <v-btn flat>Contact</v-btn>
+        <v-btn flat @click="goContact">Contact</v-btn>
         <v-menu dark fixed open-on-hover offset-y v-if="this.$store.state.admin">
           <v-btn flat slot="activator">
             <v-avatar
@@ -47,6 +47,9 @@ export default {
     goAbout () {
       this.$router.push({path: '/about'})
     },
+    goContact () {
+      this.$router.push({path: '/contact'})
+    },
     menuItem (index) {
       switch (index) {
         case 0:
@@ -59,6 +62,7 @@ export default {
       console.log('Toolbar logout')
       this.$cookie.delete('admin')
       this.$store.dispatch('setAdmin', null)
+      this.$router.push('/')
     }
   }
 }
