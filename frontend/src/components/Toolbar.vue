@@ -14,7 +14,7 @@
         <v-btn flat @click="goAbout">About</v-btn>
         <v-btn flat>Portfolio</v-btn>
         <v-btn flat>Contact</v-btn>
-        <v-menu v-if="this.$store.state.admin">
+        <v-menu dark fixed open-on-hover offset-y v-if="this.$store.state.admin">
           <v-btn flat slot="activator">
             <v-avatar
               class="title cyan"
@@ -22,6 +22,11 @@
               <v-icon size="30px">verified_user</v-icon>
             </v-avatar>
           </v-btn>
+          <v-list>
+            <v-list-tile v-for="(menu, index) in menuItems" :key="index" @click="menuItem(index)">
+              <v-list-tile-title>{{menu.menu}}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
         </v-menu>
       </v-toolbar-items>
   </v-toolbar>
@@ -31,7 +36,8 @@
 export default {
   data () {
     return {
-      avatar: 'Ody'
+      avatar: 'Ody',
+      menuItems: [{menu: 'logout'}]
     }
   },
   methods: {
@@ -40,6 +46,19 @@ export default {
     },
     goAbout () {
       this.$router.push({path: '/about'})
+    },
+    menuItem (index) {
+      switch (index) {
+        case 0:
+          this.logout()
+          break
+        default:
+      }
+    },
+    logout () {
+      console.log('Toolbar logout')
+      this.$cookie.delete('admin')
+      this.$store.dispatch('setAdmin', null)
     }
   }
 }

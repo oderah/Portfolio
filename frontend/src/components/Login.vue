@@ -57,10 +57,13 @@ export default {
         // this.admin['email'] = response.data.email
         // this.admin = response.data
 
-        this.$store.dispatch('setAdmin', {
+        let admin = {
           email: response.data.admin.email,
           username: response.data.admin.username
-        })
+        }
+        this.$store.dispatch('setAdmin', admin)
+
+        this.$cookie.set('admin', JSON.stringify(admin), {expires: 7})
 
         this.$router.push('/')
       } catch (err) {

@@ -20,6 +20,12 @@ export default {
   components: {
     Footer,
     Toolbar
+  },
+  mounted () {
+    let admin = this.$cookie.get('admin')
+    if (admin) {
+      this.$store.dispatch('setAdmin', JSON.parse(admin))
+    }
   }
 }
 </script>

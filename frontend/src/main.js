@@ -9,9 +9,12 @@ import router from './router'
 import { sync } from 'vuex-router-sync'
 import store from '@/store/store'
 
+var VueCookie = require('vue-cookie')
+
 Vue.config.productionTip = false
 
 Vue.use(Vuetify)
+Vue.use(VueCookie)
 
 sync(store, router)
 
