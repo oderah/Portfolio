@@ -5,6 +5,9 @@ const TITLE = require('../models').Title
 const TECH = require('../models').Tech
 const ABOUT = require('../models').About
 const PROGRAM = require('../models').Program
+const PROJECT = require('../models').Project
+const IMAGEPATH = require('../models').ImagePath
+const DESCRIPTION = require('../models').Description
 
 async function getProfile (req, res) {
   try {
@@ -17,16 +20,41 @@ async function getProfile (req, res) {
     profile['techs'] = await _profile.getTeches()
     profile['abouts'] = await _profile.getAbouts()
     profile['programs'] = await _profile.getPrograms()
+    profile['descriptions'] = []
+    profile['imagePaths'] = []
 
-    res.send({
-      profile: {..._profile.toJSON(), ...profile}
+    var dump = [] // temp veriable for projects
+
+    _profile.getProjects().then(projects => {
+      Promise.all(projects.map(project => {
+        return new Promise((resolve, reject) => {
+          PROJECT.findById(project.id).then(_project => {
+            _project.getDescriptions().then(descriptions => {
+              profile.descriptions.push(descriptions)
+
+              _project.getImagePaths().then(imagePaths => {
+                profile.imagePaths.push(imagePaths)
+                dump.push(project)
+                return resolve(true)
+              })
+            })
+          })
+        })
+      })).then(() => {
+        profile['projects'] = dump
+        res.send({
+          profile: {..._profile.toJSON(), ...profile}
+        })
+      })
     })
   } catch (err) {
+    console.log(err)
     res.status(404).send('Not found!')
   }
 }
 
 async function setProfile (req, res) {
+  console.log(req.body.projects)
   try {
     var profile = await PROFILE.findById(1)
     if (!profile) {
@@ -39,6 +67,7 @@ async function setProfile (req, res) {
     if (req.body.programs) await setPrograms(req.body.programs, profile)
     if (req.body.techs) await setTechs(req.body.techs, profile)
     if (req.body.abouts) await setAbouts(req.body.abouts, profile)
+    if (req.body.projects) await setProjects(req.body.projects, profile)
 
     res.send({
       msg: true
@@ -76,7 +105,7 @@ async function setPrograms (programs, profile) {
 }
 
 async function setTechs (techs, profile) {
-  await TECH.destroy({where: {}, truncate: true})
+  // await TECH.destroy({where: {}, truncate: true})
   await techs.forEach(async tech => {
     TECH.findOrCreate({where: tech}).spread(async (_tech, meta) => {
       await profile.addTech(_tech.id)
@@ -98,6 +127,39 @@ async function setSocials (socials, profile) {
   await socials.forEach(async social => {
     SOCIAL.findOrCreate({where: social}).spread(async (_social, meta) => {
       await profile.addSocial(_social.id)
+    })
+  })
+}
+
+async function setProjects (projects, profile) {
+  console.log('setprojects', projects)
+  await PROJECT.destroy({where: {}, truncate: true})
+  await DESCRIPTION.destroy({where: {}, truncate: true})
+  await IMAGEPATH.destroy({where: {}, truncate: true})
+
+  // create project
+  await projects.forEach(async project => {
+    PROJECT.findOrCreate({
+      where: {
+        title: project.title,
+        _link: project._link,
+        tag: project.tag,
+        release_date: project.release_date
+      }
+    }).spread(async (_project, meta) => {
+      // create descriptions
+      await project.descriptions.forEach(description => {
+        DESCRIPTION.findOrCreate({where: description}).spread(async (_description) => {
+          _project.addDescription(_description.id)
+        })
+      })
+      await project.imagePaths.forEach(path => {
+        // create imagePaths
+        IMAGEPATH.create(path).then(async (_imagePath) => {
+          _project.addImagePath(_imagePath.id)
+        })
+      })
+      await profile.addProject(_project.id)
     })
   })
 }

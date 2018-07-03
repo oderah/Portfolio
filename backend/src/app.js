@@ -20,7 +20,9 @@ app.get('/status', (req, res) => {
 
 require('./routes')(app)
 
-sequelize.sync().then(() => {
-  app.listen(config.port)
-  console.log(`Server started on port ${config.port}`)
+sequelize.query('SET FOREIGN_KEY_CHECKS = 0', {raw: true}).then(() => {
+  sequelize.sync().then(() => {
+    app.listen(config.port)
+    console.log(`Server started on port ${config.port}`)
+  })
 })

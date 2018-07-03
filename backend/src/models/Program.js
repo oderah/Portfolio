@@ -3,8 +3,8 @@ module.exports = (sequelize, DataTypes) => {
     institution: DataTypes.STRING,
     title: DataTypes.STRING,
     credential: DataTypes.STRING,
-    start: DataTypes.DATEONLY,
-    end: DataTypes.DATEONLY,
+    start: DataTypes.STRING,
+    end: DataTypes.STRING,
     ProfileId: DataTypes.INTEGER
   })
 

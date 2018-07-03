@@ -12,7 +12,7 @@
       <v-spacer />
       <v-toolbar-items>
         <v-btn flat @click="goAbout">About</v-btn>
-        <v-btn flat>Portfolio</v-btn>
+        <v-btn flat @click="goPortfolio">Portfolio</v-btn>
         <v-btn flat @click="goContact">Contact</v-btn>
         <v-menu dark fixed open-on-hover offset-y v-if="this.$store.state.admin">
           <v-btn flat slot="activator">
@@ -46,6 +46,9 @@ export default {
     },
     goAbout () {
       this.$router.push({path: '/about'})
+    },
+    goPortfolio () {
+      this.$router.push({path: '/portfolio'})
     },
     goContact () {
       this.$router.push({path: '/contact'})

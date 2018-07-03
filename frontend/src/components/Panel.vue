@@ -1,5 +1,8 @@
 <template>
   <v-card class="panel">
+    <v-card-media>
+      <slot name="media"></slot>
+    </v-card-media>
     <v-card-title :class="_class">
       <slot name="title"></slot>
     </v-card-title>

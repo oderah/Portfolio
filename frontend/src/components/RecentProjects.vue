@@ -23,7 +23,7 @@
           </v-card-text>
           <!-- Card Actions -->
           <v-card-actions>
-            <v-btn flat>
+            <v-btn>
               info
             </v-btn>
             <v-spacer />
@@ -32,7 +32,7 @@
               class="title pink lighten-1"
               size="30px">
               <v-icon dark size="20px">
-                {{tags[project.tag]}}
+                {{app_tags[project.tag]}}
               </v-icon>
             </v-avatar>
           </v-card-actions>
@@ -48,13 +48,13 @@ export default {
     return {
       cardtitle: 'Card Title',
       cardtext: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      tags: {
-        'graphic-design': 'bubble_chart',
-        'mobile-app': 'smartphone',
-        'website': 'desktop_mac',
-        'web-app': 'laptop_mac',
-        'software': 'android'
-      },
+      // tags: {
+      //   'graphic-design': 'bubble_chart',
+      //   'mobile-app': 'smartphone',
+      //   'website': 'desktop_mac',
+      //   'web-app': 'laptop_mac',
+      //   'software': 'android'
+      // },
       projects: [
         {
           title: '1',
@@ -82,6 +82,11 @@ export default {
           src: 'https://images.pexels.com/photos/450035/pexels-photo-450035.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260'
         }
       ]
+    }
+  },
+  computed: {
+    app_tags: function () {
+      return this.$store.state.tags
     }
   }
 }
