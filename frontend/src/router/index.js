@@ -4,7 +4,8 @@ import Landing from '@/components/Landing'
 import Login from '@/components/Login'
 import About from '@/components/about/About'
 import Contact from '@/components/Contact'
-import Porfolio from '@/components/Porfolio'
+import Porfolio from '@/components/portfolio/Porfolio'
+import Project from '@/components/portfolio/Project'
 
 Vue.use(Router)
 
@@ -34,6 +35,11 @@ export default new Router({
       path: '/portfolio',
       name: 'portfolio',
       component: Porfolio
+    },
+    {
+      path: '/portfolio/:id',
+      name: 'project',
+      component: Project
     }
   ]
 })

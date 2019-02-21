@@ -27,8 +27,8 @@
         </v-container>
         <v-layout column wrap slot="text" v-if="!edit">
           <v-flex xs10 v-for="about in profile.abouts" :key="about.id">
-            <v-container class="paragraph">
-              <h3>{{about.paragraph}} Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</h3>
+            <v-container>
+              <p>{{about.paragraph}} Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
             </v-container>
           </v-flex>
         </v-layout>
@@ -123,9 +123,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .paragraph {
-    text-align: left;
-  }
   .tech {
     /* background: linear-gradient(to right, #880E4F, #9C3F70, #D45699, #9C3F70); */
     background: radial-gradient(circle at top left, #880E4F, #9C3F70, #D45699)

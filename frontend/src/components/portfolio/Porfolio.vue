@@ -1,26 +1,44 @@
 <template>
-  <v-container>
+  <div class="my-container">
+    <!-- Profile Pic -->
+    <v-avatar
+      size="150px"
+      class="white profile-pic">
+      Pic
+    </v-avatar>
     <v-layout row>
+      <!-- Add Project Form -->
+      <NewProject v-if="add" />
       <!-- Projects -->
-      <v-flex xs11>
+      <v-flex xs12 sm12 md12 lg12 v-if="!add && projectsLoaded">
         <v-layout row wrap>
-          <v-flex xs4 v-for="(project, index) in projectsToDisplay" :key="project.id" style="padding: 15px;">
-            <Panel>
+          <v-flex lg3 md4 sm6 xs12 v-for="(project, index) in projectsToDisplay" :key="project.id" style="padding: 15px;">
+            <Panel @click.native="goToProject(project.id)">
               <!-- Title -->
               <span class="name" slot="title">{{project.title}}</span>
               <!-- carousel -->
               <v-carousel slot="media" hide-delimiters hide-controls
                 class="carousel black"
-                :interval="delay(index)">
+                :interval="delay(index)"
+                v-if="picturesLoaded"
+                >
                 <v-carousel-item
-                  v-for="(image,i) in getImagePaths(project.id)[0]"
+                  v-for="(image,i) in project.pictures"
                   :key="i"
-                  :src="image.imagePath"
-                ></v-carousel-item>
+                  @error="missingImage"
+                >
+                  <img
+                    :id="'p' + project.id + '_' + image.id"
+                    :src="image"
+                    :alt="missingImage"
+                  />
+                </v-carousel-item>
               </v-carousel>
-              <!-- description -->
+              <v-container class="carousel my-loader" slot="media" v-if="!picturesLoaded">
+                <span class="app-loading">Loading...</span>
+              </v-container>
               <v-layout column slot="text" style="height: 100px;">
-                <p style="textAlign: left; overflow: hidden;">{{getDescriptions(project.id)[0][0]['description']}} Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                <p style="textAlign: left; overflow: hidden;">{{project.Descriptions[0].description || ''}} Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
               </v-layout>
               <v-layout row slot="actions">
                 <!-- Info button -->
@@ -36,11 +54,26 @@
                     {{app_tags[project.tag]}}
                   </v-icon>
                 </v-avatar>
+                <!-- delete -->
+                <v-btn
+                  fab
+                  small
+                  dark
+                  flat
+                  color="red"
+                  class="delete"
+                   v-if="edit">
+                  <v-icon>cancel</v-icon>
+                </v-btn>
               </v-layout>
             </Panel>
           </v-flex>
         </v-layout>
       </v-flex>
+      <!-- Project loading -->
+      <v-container class="my-loader" v-if="!add && !projectsLoaded">
+        <span class="app-loading">Loading...</span>
+      </v-container>
       <!-- Control Panel -->
       <v-flex class="control">
         <v-container>
@@ -86,28 +119,21 @@
               </v-flex>
               <!-- edit options -->
               <v-layout row wrap v-if="edit">
-                <!-- delete -->
-                <v-btn
-                  fab
-                  small
-                  dark
-                  color="black">
-                  <v-icon>delete</v-icon>
-                </v-btn>
                 <!-- cancel button -->
                 <v-btn
                   fab
                   small
                   dark
                   color="pink"
-                  @click="() => {edit = false}">
+                  @click="() => {edit = false; add = false}">
                   <v-icon>cancel</v-icon>
                 </v-btn>
                 <!-- add -->
                 <v-btn
                   fab
                   small
-                  dark>
+                  dark
+                  @click="() => {add = true}">
                   <v-icon>add</v-icon>
                 </v-btn>
                 <!-- save -->
@@ -126,83 +152,132 @@
     </v-layout>
     <br />
     <br />
-  </v-container>
+  </div>
 </template>
 
 <script>
 import Panel from '@/components/Panel'
 import ProfileService from '@/services/ProfileService'
+import NewProject from './NewProject'
+
 var _ = require('lodash')
+
 export default {
   data () {
     return {
       projects: [],
       sortOrder: 'mostRecent',
       edit: false,
+      add: false,
       tags: [],
-      descriptions: [],
-      imagePaths: [],
-      filter: []
+      filter: [],
+      projectsLoaded: false,
+      picturesLoaded: false
     }
   },
   components: {
-    Panel
+    NewProject, Panel
   },
-  async mounted () {
+  async created () {
+    // load projects
     await this.reloadProjects()
     this.tags = ['website', 'web-app', 'mobile-app', 'graphic-design']
-    this.filter = this.tags
-    window.scrollTo(0, 0)
+
+    this.filter = this.tags // filter projects
+    window.scrollTo(0, 0) // scroll to top
+    this.projectsLoaded = true // set projectsLoaded
+
+    let count = 0
+    // load pictures
+    this.loadPictures(() => {
+      count++
+      if (count === this.count()) { // all pictures loaded
+        this.picturesLoaded = true // set picturesLoaded
+      }
+    })
   },
   methods: {
+    // this function reloads the projects
     async reloadProjects () {
       this.projects = await this.getProjects()
+      this.projects = this.projects.data.projects
     },
+    // this function gets the projects from server
     async getProjects () {
-      const projects = (await ProfileService.getProfile()).data.profile.projects
-      this.descriptions = (await ProfileService.getProfile()).data.profile.descriptions
-      this.imagePaths = (await ProfileService.getProfile()).data.profile.imagePaths
+      const projects = await ProfileService.getProjects()
       return projects
     },
+    // this function navigates to the project with the specified id
+    goToProject (id) {
+      this.$router.push({path: `/portfolio/${id}`})
+    },
+    // this function filters the projects based on this.filter
     _filter () {
       let filtered = []
+      // this.$root.$emit('filter')
 
       this.filter.forEach(option => {
-        let projs = this.projects.slice()
+        let projs = this.projects.slice() // get a copy of this.projects
+
+        // find last project with tag = option
         let index = _.findLastIndex(projs, {tag: option})
+
         while (index >= 0) {
+          // add proj to filtered if it doesn't already exist in filtered
           if ((_.findIndex(filtered, {title: projs[index].title})) === -1) {
             filtered.push(projs[index])
           }
+
+          // remove filtered project from projs
           projs = (index > 0) ? projs.slice(0, index) : projs.slice(1)
+
+          // find another project with tag = option
           index = _.findLastIndex(projs, {tag: option})
         }
       })
       return filtered
     },
+    // this function calculated the delay based on factor
     delay (factor) {
       return (factor + 4) + '000'
     },
-    getDescriptions (projectId) {
-      let descriptions = []
-
-      this.descriptions.forEach(description => {
-        if (description[0].ProjectId === projectId) {
-          description = _.orderBy(description, ['id'], ['asc'])
-          descriptions.push(description)
-        }
+    // this function requests image from backend
+    async processPath (id, callback) {
+      ProfileService.loadImage(id).then(res => {
+        callback(res.data)
       })
-      return descriptions
     },
-    getImagePaths (projectId) {
-      let imagePaths = []
+    // this function loads all the pictures from the server
+    loadPictures (callback) {
+      this.projects.forEach((project) => {
+        project['pictures'] = [] // add new key 'pictures' of type array to project
 
-      this.imagePaths.forEach(path => {
-        if (path[0].ProjectId === projectId) {
-          imagePaths.push(path)
-        }
+        // process each imagePath in project
+        project.ImagePaths.forEach(path => {
+          this.processPath(path.id, (img) => {
+            img = img.data // image as a buffer
+
+            // the next steps convert buffer to image
+            var arrayBufferView = new Uint8Array(img) // convert buffer to Uint8Array
+            var blob = new Blob([arrayBufferView], {type: 'image/jpeg'}) // create blob form Uint8Array
+            var urlCreator = window.URL || window.webkitURL
+            var imageUrl = urlCreator.createObjectURL(blob) // create URL from blob
+
+            project.pictures.push(imageUrl) // add to pictures array in project
+            callback()
+          })
+        })
       })
-      return imagePaths
+    },
+    // this function calculated the total number of imagePaths
+    count () {
+      let count = 0
+
+      this.projects.forEach(project => {
+        count += project.ImagePaths.length
+      })
+
+      return count
     }
   },
   computed: {
@@ -224,6 +299,9 @@ export default {
     projectsToDisplay: function () {
       if (this.sortOrder === 'mostRecent') return this.sortedProjectsDesc
       else return this.sortedProjectsAsc
+    },
+    missingImage: function () {
+      return 'Missing Image'
     }
   }
 }
@@ -233,11 +311,26 @@ export default {
 <style scoped>
   .carousel {
     height: 200px;
+    margin: 0;
+  }
+  img {
+    max-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
+    image-orientation: from-image;
   }
   .control {
     position: fixed;
-    top: 10vh;
-    right: 0;
+    top: 30vh;
+    right: -160px;
     width: 240px;
+    transition-duration: 0.3s;
+  }
+  .control:hover {
+    transform: translateX(-140px);
+    transition-duration: 0.3s;
+  }
+  .my-container {
+    padding: 30px;
   }
 </style>

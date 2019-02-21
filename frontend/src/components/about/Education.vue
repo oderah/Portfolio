@@ -6,7 +6,7 @@
       </v-container>
       <v-container slot="text" v-if="!edit">
         <v-layout row wrap>
-          <v-flex xs3 v-for="ed in profile.programs" :key="ed.id">
+          <v-flex lg3 md4 sm6 xs12 v-for="ed in profile.programs" :key="ed.id">
             <v-container class="ed-container">
               <v-card class="_card">
                 <v-card-media class="cyan darken-2">

@@ -38,13 +38,13 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-  background-image: url('https://images.pexels.com/photos/450035/pexels-photo-450035.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260');
+  /* background-image: url('https://images.pexels.com/photos/450035/pexels-photo-450035.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260'); */
   background-repeat: no-repeat;
   background-size: cover;
   /* background: radial-gradient(circle at top left, #263238, #607D8B, #ECEFF1, #90A4AE, #607D8B) */
 }
 h1 {
-  color: #CFD8DC;
+  /* color: #CFD8DC; */
 }
 textarea {
   width: 100%;
@@ -96,4 +96,37 @@ textarea {
   transform: scale(1.025);
   transition-duration: 0.2s;
 }
+p, h2 {
+  text-align: left;
+}
+p {
+  font-size: 1.2em;
+}
+/* .loading {
+  position: absolute;
+  top: 40vh;
+  left: 45vw;
+} */
+.app-loading {
+  font-weight: bold;
+  animation-name: loading;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+@keyframes loading {
+  0% {transform: translateY(0px);}
+  25% {transform: translateY(5px);}
+  50% {transform: translateY(10px);}
+  75% {transform: translateY(-10px);}
+  100% {transform: translateY(-5px);}
+}
+.my-loader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+/* h2 {
+  font-size: 2em;
+} */
 </style>

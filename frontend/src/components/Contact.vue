@@ -10,7 +10,7 @@
     <Panel class="header">
       <!-- Title -->
       <v-container slot="title" class="name">
-        <h1>Contact Info</h1>
+        <h1 class="tech-names">Contact Info</h1>
       </v-container>
       <!-- Text -->
       <!-- if not edit -->

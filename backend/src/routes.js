@@ -1,10 +1,51 @@
 const AuthenticationController = require('./controllers/AuthenticationController')
 const ProfileController = require('./controllers/ProfileController')
 
+var path = require('path')
+
+const multer = require('multer')
+
+var storage = multer.diskStorage({
+  destination: function (req, file, callBack) {
+    callBack(null, path.join(__dirname, '..', 'pictures'))
+  },
+
+  filename: function (req, file, callBack) {
+    callBack(null, Date.now() + '##' + file.originalname)
+  }
+})
+
+var upload = multer({storage: storage})
+
 console.log('Auth ==> ', AuthenticationController)
 
 module.exports = (app) => {
-  app.post('/admin/login', AuthenticationController.login)
+  app.post('/admin/login', upload.none(), AuthenticationController.login)
   app.get('/about', ProfileController.getProfile)
-  app.post('/about', ProfileController.setProfile)
+  app.post('/about', upload.none(), ProfileController.setProfile)
+  app.get('/portfolio', ProfileController.getProjects)
+  app.get('/portfolio/:id', ProfileController.getProject)
+  app.post('/portfolio', upload.array('pictures', 20), ProfileController.addProject)
+  app.get('/image', ProfileController.loadImage)
+  // app.post('/portfolio', function (req, res) {
+  //   console.log('BACKEND API /portfolio... ')
+  //   let up = upload.array('pictures', 20)
+  //   up(req, res, function (err) {
+  //     console.log('up req', req.body)
+  //     if (err instanceof multer.MulterError) {
+  //       console.log(err)
+  //       res.send(false)
+  //     } else {
+  //       console.log('bruhh', req.files)
+  //
+  //       if (req.files.length > 0) {
+  //         console.log('beast', req.files[0])
+  //       } else {
+  //         console.log('bruhhhhh')
+  //       }
+  //
+  //       res.send(true)
+  //     }
+  //   })
+  // })
 }

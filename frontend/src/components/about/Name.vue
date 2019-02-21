@@ -3,7 +3,7 @@
     <!-- <Panel _class="pink-gradient tech"> -->
     <Panel class="header">
       <v-container slot="title" class="name">
-        <h1>{{profile.firstName}} {{profile.lastName}}</h1>
+        <h1 class="tech-names">{{profile.firstName}} {{profile.lastName}}</h1>
       </v-container>
       <v-container slot="text" v-if="!edit" >
         <v-layout row wrap class="tech-names">
