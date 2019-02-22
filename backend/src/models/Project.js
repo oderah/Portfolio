@@ -12,9 +12,11 @@ module.exports = (sequelize, DataTypes) => {
   const Description = sequelize.import(path.join(__dirname, 'Description'))
   const ImagePath = sequelize.import(path.join(__dirname, 'ImagePath'))
   const Tech = sequelize.import(path.join(__dirname, 'Tech'))
+  const ProjectTechs = sequelize.import(path.join(__dirname, 'ProjectTechs'))
 
   Project.hasMany(Description, {joinTableName: 'Descriptions', foreignKey: 'ProjectId'})
-  Project.hasMany(Tech, {joinTableName: 'Teches', foreignKey: 'ProjectId'})
+  Project.belongsToMany(Tech, {through: ProjectTechs, foreignKey: 'ProjectId'})
+  Tech.belongsToMany(Project, {through: ProjectTechs, foreignKey: 'TechId'})
   Project.hasMany(ImagePath, {joinTableName: 'ImagePaths', foreignKey: 'ProjectId'})
 
   return Project

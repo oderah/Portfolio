@@ -23,5 +23,11 @@ export default {
   },
   loadImage (id) {
     return Api().get(`image?id=${id}`)
+  },
+  deleteProject (id) {
+    return Api().post(`portfolio/${id}`)
+  },
+  getAllTechs () {
+    return Api().get('techs')
   }
 }

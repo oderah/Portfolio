@@ -13,7 +13,7 @@
       <v-flex xs12 sm12 md12 lg12 v-if="!add && projectsLoaded">
         <v-layout row wrap>
           <v-flex lg3 md4 sm6 xs12 v-for="(project, index) in projectsToDisplay" :key="project.id" style="padding: 15px;">
-            <Panel @click.native="goToProject(project.id)">
+            <Panel @click.native="() => {if (!edit) {goToProject(project.id)}}">
               <!-- Title -->
               <span class="name" slot="title">{{project.title}}</span>
               <!-- carousel -->
@@ -62,6 +62,7 @@
                   flat
                   color="red"
                   class="delete"
+                  @click="deleteProject(project.id)"
                    v-if="edit">
                   <v-icon>cancel</v-icon>
                 </v-btn>
@@ -185,22 +186,22 @@ export default {
 
     this.filter = this.tags // filter projects
     window.scrollTo(0, 0) // scroll to top
-    this.projectsLoaded = true // set projectsLoaded
-
-    let count = 0
-    // load pictures
-    this.loadPictures(() => {
-      count++
-      if (count === this.count()) { // all pictures loaded
-        this.picturesLoaded = true // set picturesLoaded
-      }
-    })
   },
   methods: {
     // this function reloads the projects
     async reloadProjects () {
       this.projects = await this.getProjects()
       this.projects = this.projects.data.projects
+      this.projectsLoaded = true // set projectsLoaded
+
+      let count = 0
+      // load pictures
+      this.loadPictures(() => {
+        count++
+        if (count === this.count()) { // all pictures loaded
+          this.picturesLoaded = true // set picturesLoaded
+        }
+      })
     },
     // this function gets the projects from server
     async getProjects () {
@@ -278,6 +279,17 @@ export default {
       })
 
       return count
+    },
+    // this function deletes the project specified by id
+    deleteProject (id) {
+      if (confirm('Are you sure you want to delete this project?')) {
+        this.projectsLoaded = false // set projectsLoaded
+        this.picturesLoaded = false // set picturesLoaded
+        ProfileService.deleteProject(id).then(res => {
+          console.log('res', res)
+          this.reloadProjects()
+        })
+      }
     }
   },
   computed: {

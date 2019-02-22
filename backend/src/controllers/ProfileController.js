@@ -8,6 +8,7 @@ const PROGRAM = require('../models').Program
 const PROJECT = require('../models').Project
 const IMAGEPATH = require('../models').ImagePath
 const DESCRIPTION = require('../models').Description
+const PROJECTTECHS = require('../models').ProjectTechs
 var fs = require('fs')
 var path = require('path')
 var forEachAsync = require('forEachAsync').forEachAsync
@@ -180,40 +181,87 @@ async function setProjects (projects, profile) {
   })
 }
 
+// this method processes the techss
+function processTechs (newTechs, callback, profile, oldTechs) {
+  var techs = newTechs.split(',')
+  var processed = []
+
+  console.log('starting...')
+
+  techs.forEach(tech => {
+    tech = tech.trim() // remove extra spaces
+
+    // create tech if it doesn't exist
+    TECH.findOrCreate({
+      where: {
+        tech: tech
+      }
+    }).spread(async (t, created) => {
+      await profile.addTech(t.id)
+      processed.push(t)
+
+      if (processed.length === techs.length) {
+        let array = [...oldTechs, ...processed] // merge oldTechs and newTechs
+        callback(array) // call back
+      }
+    })
+  })
+}
+
 async function addProject (req, res) {
   console.log('addproj', req.body, req.files)
   var profile = await PROFILE.findById(1)
-  PROJECT.create({
-    title: req.body.title,
-    _link: req.body._link,
-    tag: req.body.tag,
-    release_date: req.body.releaseDate
-  }).then(async (project) => {
-    JSON.parse(req.body.descriptions).forEach(description => {
-      DESCRIPTION.create({
-        description: description
-      }).then(async (desc) => {
-        await project.addDescription(desc.id)
-      }).catch(err => {
-        res.send({err: err})
-      })
-    })
 
-    req.files.forEach(file => {
-      IMAGEPATH.create({
-        imagePath: file.originalname
-      }).then(async (path) => {
-        await project.addImagePath(path.id)
-      }).catch(err => {
-        res.send({err: err})
+  // call back function
+  var callback = (techs) => {
+    // create project
+    PROJECT.create({
+      title: req.body.title,
+      _link: req.body._link,
+      tag: req.body.tag,
+      release_date: req.body.releaseDate
+    }).then(async (project) => {
+      // add descriptions
+      JSON.parse(req.body.descriptions).forEach(description => {
+        DESCRIPTION.create({
+          description: description
+        }).then(async (desc) => {
+          await project.addDescription(desc.id)
+        }).catch(err => {
+          res.send({err: err})
+        })
       })
-    })
+      // add pictures
+      req.files.forEach(file => {
+        IMAGEPATH.create({
+          imagePath: file.originalname
+        }).then(async (path) => {
+          await project.addImagePath(path.id)
+        }).catch(err => {
+          res.send({err: err})
+        })
+      })
+      // add technologies
+      techs.forEach(tech => {
+        PROJECTTECHS.findOrCreate({
+          where: {
+            ProjectId: project.id,
+            TechId: tech.id
+          }
+        }).spread((ptech, created) => {
+          console.log('ptech', ptech)
+        })
+      })
 
-    await profile.addProject(project.id)
-    res.send({id: project.id})
-  }).catch(err => {
-    res.send({err: err})
-  })
+      await profile.addProject(project.id) // add project to profile
+
+      res.send({id: project.id})
+    }).catch(err => {
+      res.send({err: err})
+    })
+  }
+
+  processTechs(req.body.newTechs, callback, profile, JSON.parse(req.body.techs))
   // await req.files.forEach(file => {
   //   var name = IMAGEPATH.create({
   //     imagePath: file.originalname
@@ -323,11 +371,112 @@ function getImage (id, cb) {
   })
 }
 
+// this function deletes given project
+function deleteProject (req, res) {
+  console.log('params.id', req.params.id)
+  DESCRIPTION.destroy({
+    where: {
+      ProjectId: req.params.id
+    }
+  }).then(() => {
+    IMAGEPATH.destroy({
+      where: {
+        ProjectId: req.params.id
+      }
+    }).then(() => {
+      PROJECT.destroy({
+        where: {
+          id: req.params.id
+        }
+      }).then(() => {
+        res.send(true)
+      }).catch(err => {
+        console.log(err)
+        res.send(false)
+      })
+    }).catch(err => {
+      console.log(err)
+      res.send(false)
+    })
+  }).catch(err => {
+    console.log(err)
+    res.send(false)
+  })
+}
+
+// this function returns all techs
+function getAllTechs (req, res) {
+  TECH.findAll({
+    where: {
+      ProfileId: 1
+    }
+  }).then(techs => {
+    res.send({
+      techs: techs
+    })
+  }).catch(err => {
+    console.log(err)
+    res.send(false)
+  })
+}
+
+// this function gets the technologies referenced by TechId in techs
+function resolveTechs (techs, res) {
+  var technologies = []
+
+  // callback function
+  var callback = (t) => {
+    console.log('CALLBACK', t)
+    technologies.push(t)
+
+    if (technologies.length === techs.length) {
+      res.send({
+        techs: technologies
+      })
+    }
+  }
+
+  // find techs
+  var call = (callback) => {
+    techs.forEach(projTech => {
+      console.log('PROJTECH', projTech.TechId)
+      TECH.find({
+        where: {
+          id: projTech.TechId
+        }
+      }).then(tech => {
+        callback(tech) // call back
+      })
+    })
+  }
+
+  call(callback)
+}
+
+// this function returns all techs used in a project
+function getProjectTechs (req, res) {
+  // var techss = []
+  PROJECTTECHS.findAll({
+    where: {
+      ProjectId: req.params.id
+    }
+  }).then(techs => {
+    resolveTechs(techs, res)
+    // res.send(techs)
+  }).catch(err => {
+    console.log(err)
+    res.send(false)
+  })
+}
+
 module.exports = {
   getProfile: getProfile,
   setProfile: setProfile,
   addProject: addProject,
   getProjects: getProjects,
   getProject: getProject,
-  loadImage: loadImage
+  loadImage: loadImage,
+  deleteProject: deleteProject,
+  getAllTechs: getAllTechs,
+  getProjectTechs: getProjectTechs
 }

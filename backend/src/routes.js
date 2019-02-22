@@ -24,9 +24,12 @@ module.exports = (app) => {
   app.get('/about', ProfileController.getProfile)
   app.post('/about', upload.none(), ProfileController.setProfile)
   app.get('/portfolio', ProfileController.getProjects)
+  app.post('/portfolio/:id', ProfileController.deleteProject)
   app.get('/portfolio/:id', ProfileController.getProject)
   app.post('/portfolio', upload.array('pictures', 20), ProfileController.addProject)
   app.get('/image', ProfileController.loadImage)
+  app.get('/techs', ProfileController.getAllTechs)
+  app.get('/techs/:id', ProfileController.getProjectTechs)
   // app.post('/portfolio', function (req, res) {
   //   console.log('BACKEND API /portfolio... ')
   //   let up = upload.array('pictures', 20)

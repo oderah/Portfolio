@@ -30,6 +30,31 @@
           label="Link"
           :rules="[rules.required]">
         </v-text-field>
+        <!-- techs -->
+        <v-select
+          :items="allTechs"
+          item-text="tech"
+          return-object
+          v-model="techs"
+          solo
+          clearable
+          multiple
+          label="Select techs"
+          :rules="[rules.required]"
+        ></v-select>
+        <!-- new tech -->
+        <v-checkbox label="Add new technologies"
+          v-model="checkbox"
+          value="checked"
+        >
+        </v-checkbox>
+        <v-text-field
+          v-model="newTechs"
+          hint="Separate technologies by comma ','"
+          solo
+          :rules="[rules.required]"
+          v-if="createNewTech">
+        </v-text-field>
         <!-- description -->
         <v-text-field
           v-model="description"
@@ -81,10 +106,21 @@ export default {
       link: '',
       description: '',
       files: [],
+      techs: '',
+      allTechs: [],
+      checkbox: '',
+      newTechs: '',
+      createNewTech: false,
       rules: {
         required: value => !!value || 'Required'
       }
     }
+  },
+  mounted () {
+    // get all techs from server
+    ProfileService.getAllTechs().then(techs => {
+      this.allTechs = techs.data.techs
+    })
   },
   methods: {
     // this function stores new selected files
@@ -109,6 +145,8 @@ export default {
         data.append('tag', this.tag)
         data.append('releaseDate', this.releaseDate)
         data.append('descriptions', JSON.stringify(descriptions))
+        data.append('techs', JSON.stringify(this.techs))
+        data.append('newTechs', this.newTechs)
 
         // append pictured to formdata
         for (var i = 0; i < this.files.length; i++) {
@@ -126,6 +164,12 @@ export default {
           // this.$router.push({path: '/'})
         })
       }
+    }
+  },
+  watch: {
+    // watches checkbox, on change, adjust this,createNewTech
+    checkbox: function () {
+      (this.checkbox === 'checked') ? this.createNewTech = true : this.createNewTech = false
     }
   },
   components: {
