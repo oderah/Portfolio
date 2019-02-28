@@ -30,7 +30,7 @@ export default {
   }
   .panel {
     /* padding: 10px; */
-    box-shadow: 0 2px 20px 5px;
+    box-shadow: 0 2px 10px 1px;
   }
   .panel:hover {
     transform: scale(1.025);

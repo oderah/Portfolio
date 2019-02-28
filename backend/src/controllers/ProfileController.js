@@ -182,29 +182,46 @@ async function setProjects (projects, profile) {
 }
 
 // this method processes the techss
-function processTechs (newTechs, callback, profile, oldTechs) {
-  var techs = newTechs.split(',')
-  var processed = []
+function processTechs (newTechs, callback, project, profile, oldTechs) {
+  PROJECTTECHS.destroy({
+    where: {
+      ProjectId: (project) ? project.id : null
+    }
+  }).then(() => {
+    newTechs = newTechs.trim()
+    if (newTechs.length > 0) {
+      var techs = newTechs.split(',')
+      var processed = []
 
-  console.log('starting...')
+      console.log('starting...')
 
-  techs.forEach(tech => {
-    tech = tech.trim() // remove extra spaces
+      techs.forEach(tech => {
+        tech = tech.trim() // remove extra spaces
 
-    // create tech if it doesn't exist
-    TECH.findOrCreate({
-      where: {
-        tech: tech
-      }
-    }).spread(async (t, created) => {
-      await profile.addTech(t.id)
-      processed.push(t)
+        if (tech.length > 0) { // if not blank
+          // create tech if it doesn't exist
+          TECH.findOrCreate({
+            where: {
+              tech: tech
+            }
+          }).spread(async (t, created) => {
+            await profile.addTech(t.id)
+            processed.push(t)
 
-      if (processed.length === techs.length) {
-        let array = [...oldTechs, ...processed] // merge oldTechs and newTechs
-        callback(array) // call back
-      }
-    })
+            if (processed.length === techs.length) {
+              let array = [...oldTechs, ...processed] // merge oldTechs and newTechs
+              console.log('done')
+              callback(array) // call back
+            }
+          })
+        }
+      })
+    } else {
+      console.log('done')
+      callback(oldTechs)
+    }
+  }).catch(err => {
+    console.log(err)
   })
 }
 
@@ -218,6 +235,7 @@ async function addProject (req, res) {
     PROJECT.create({
       title: req.body.title,
       _link: req.body._link,
+      repo: req.body.repo,
       tag: req.body.tag,
       release_date: req.body.releaseDate
     }).then(async (project) => {
@@ -261,7 +279,7 @@ async function addProject (req, res) {
     })
   }
 
-  processTechs(req.body.newTechs, callback, profile, JSON.parse(req.body.techs))
+  processTechs(req.body.newTechs, callback, null, profile, JSON.parse(req.body.techs))
   // await req.files.forEach(file => {
   //   var name = IMAGEPATH.create({
   //     imagePath: file.originalname
@@ -469,6 +487,138 @@ function getProjectTechs (req, res) {
   })
 }
 
+// this function handles image edits for a specified project
+function handleImageEdit (imagesToDelete, newImages, project, callback) {
+  console.log('handling image edit')
+  var addNewImages = () => {
+    if (newImages.length > 0) {
+      console.log('adding new images')
+      // add new images
+      let count = 0
+      newImages.forEach(file => {
+        console.log(file)
+        IMAGEPATH.create({
+          imagePath: file.originalname
+        }).then(async (path) => {
+          await project.addImagePath(path.id)
+          count++
+          console.log(count)
+          // call back if last image
+          if (count === newImages.length) {
+            callback()
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      })
+    } else {
+      callback()
+    }
+  }
+
+  if (imagesToDelete.length > 0) {
+    // delete imagesToDelete
+    imagesToDelete.forEach(id => {
+      IMAGEPATH.destroy({
+        where: {
+          id: id
+        }
+      }).then(() => {
+        addNewImages()
+      }).catch(err => {
+        console.log(err)
+      })
+    })
+  } else {
+    addNewImages()
+  }
+}
+
+// this function handles description edits for a specified project
+function handleDescriptionEdit (description, project, callback) {
+  // remove old descriptions
+  DESCRIPTION.destroy({
+    where: {
+      ProjectId: project.id
+    }
+  }).then(() => {
+    // add new descriptions
+    let count = 0
+    let newDescriptions = JSON.parse(description)
+
+    newDescriptions.forEach(desc => {
+      DESCRIPTION.create({
+        description: desc
+      }).then(async (desc) => {
+        await project.addDescription(desc.id)
+        count++
+        if (count === newDescriptions.length) {
+          callback()
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    })
+  })
+}
+
+// this function edits a project
+async function editProject (req, res) {
+  console.log('editProject', req.params.id, req.body, req.files)
+  var profile = await PROFILE.findById(1)
+
+  PROJECT.find({
+    where: {
+      id: req.params.id
+    }
+  }).then(project => {
+    // call back for processTechs
+    var processTechsCallback = (techs) => {
+      // add technologies
+      let count = 0
+      techs.forEach(tech => {
+        PROJECTTECHS.findOrCreate({
+          where: {
+            ProjectId: project.id,
+            TechId: tech.id
+          }
+        }).spread((ptech, created) => {
+          count++
+
+          if (count === techs.length) {
+            // call back for handleImageEdit
+            var handleDescriptionEditCallback = () => {
+              console.log('call back from handleDescriptionEdit')
+              // call back for handleDescriptionEdit
+              var handleImageEditCallback = () => {
+                console.log('call back from handleImageEdit')
+                project.update({
+                  title: req.body.title,
+                  _link: req.body._link,
+                  repo: req.body.repo,
+                  tag: req.body.tag,
+                  release_date: req.body.release_date
+                }).then(() => {
+                  res.send(true)
+                }).catch(err => {
+                  console.log(err)
+                  res.send(false)
+                })
+              }
+
+              handleImageEdit(JSON.parse(req.body.imagesToDelete), req.files, project, handleImageEditCallback) // handle images
+            }
+
+            handleDescriptionEdit(req.body.descriptions, project, handleDescriptionEditCallback) // handle descriptions
+          }
+        })
+      })
+    }
+
+    processTechs(req.body.newTechs, processTechsCallback, project, profile, JSON.parse(req.body.techs)) // process techs
+  })
+}
+
 module.exports = {
   getProfile: getProfile,
   setProfile: setProfile,
@@ -478,5 +628,6 @@ module.exports = {
   loadImage: loadImage,
   deleteProject: deleteProject,
   getAllTechs: getAllTechs,
-  getProjectTechs: getProjectTechs
+  getProjectTechs: getProjectTechs,
+  editProject: editProject
 }

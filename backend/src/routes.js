@@ -15,7 +15,15 @@ var storage = multer.diskStorage({
   }
 })
 
-var upload = multer({storage: storage})
+var upload = multer({
+  storage: storage,
+  onParseStart: function (file) {
+    console.log(`PARSING ${file.originalname} ...`)
+  },
+  onFileUploadStart: function (file) {
+    console.log(`UPLOADING ${file.originalname} ...`)
+  }
+})
 
 console.log('Auth ==> ', AuthenticationController)
 
@@ -27,6 +35,7 @@ module.exports = (app) => {
   app.post('/portfolio/:id', ProfileController.deleteProject)
   app.get('/portfolio/:id', ProfileController.getProject)
   app.post('/portfolio', upload.array('pictures', 20), ProfileController.addProject)
+  app.post('/portfolio/edit/:id', upload.array('photos', 20), ProfileController.editProject)
   app.get('/image', ProfileController.loadImage)
   app.get('/techs', ProfileController.getAllTechs)
   app.get('/techs/:id', ProfileController.getProjectTechs)

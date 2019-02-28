@@ -4,7 +4,6 @@
     <v-avatar
       size="150px"
       class="white profile-pic">
-      Pic
     </v-avatar>
     <!-- Contact Card -->
     <Panel class="header">

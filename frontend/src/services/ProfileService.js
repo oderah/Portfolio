@@ -29,5 +29,12 @@ export default {
   },
   getAllTechs () {
     return Api().get('techs')
+  },
+  editProject (id, data) {
+    return Api().post(`portfolio/edit/${id}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
   }
 }

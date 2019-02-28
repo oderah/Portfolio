@@ -86,7 +86,6 @@ textarea {
 .profile-pic {
   position: fixed;
   top: 10vh;
-  /* left: 1vw; */
   right: 0;
   z-index: 2;
   box-shadow: 0 0 15px 5px black;
@@ -126,7 +125,43 @@ p {
   flex-direction: column;
   justify-content: center;
 }
+.thumbnail {
+  width: 100px;
+  height: 100px;
+  overflow: visible;
+  transition-duration: 0.2s;
+  padding: 0 5px;
+}
+.thumbnail:hover {
+  transform: scale(1.05);
+  transition-duration: 0.2s;
+}
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+}
 /* h2 {
   font-size: 2em;
 } */
+/* xs */
+@media only screen and (max-width: 600px) {
+  .profile-pic {
+    transform: scale(0.6);
+    right: -6.5vw;
+  }
+}
+/* sm */
+@media only screen and (max-width: 960px) and (min-width: 601px) {
+  .profile-pic {
+    transform: scale(0.8);
+    right: -2vw;
+  }
+}
+/* md */
+@media only screen and (max-width: 1264px) and (min-width: 961px) {
+  .profile-pic {
+    transform: scale(0.9);
+    right: -1vw;
+  }
+}
 </style>

@@ -4,9 +4,8 @@
     <v-avatar
       size="150px"
       class="white profile-pic">
-      Pic
     </v-avatar>
-    <v-layout row>
+    <v-layout column>
       <!-- Add Project Form -->
       <NewProject v-if="add" />
       <!-- Projects -->
@@ -61,7 +60,6 @@
                   dark
                   flat
                   color="red"
-                  class="delete"
                   @click="deleteProject(project.id)"
                    v-if="edit">
                   <v-icon>cancel</v-icon>

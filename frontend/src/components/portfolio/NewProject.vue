@@ -7,15 +7,37 @@
         <v-text-field
           v-model="title"
           label="Title"
+          solo
           :rules="[rules.required]"
           autofocus>
         </v-text-field>
+        <br />
+        <v-layout row>
+          <!-- link -->
+          <v-text-field
+            solo
+            v-model="link"
+            label="Live link"
+            :rules="[rules.required]">
+          </v-text-field>
+          <v-spacer></v-spacer>
+          <!-- repo -->
+          <v-text-field
+            solo
+            v-model="repo"
+            label="Link to code"
+            :rules="[rules.required]">
+          </v-text-field>
+        </v-layout>
+        <br />
         <!-- release date -->
         <v-text-field
+          solo
           v-model="releaseDate"
           label="Release Date"
           :rules="[rules.required]">
         </v-text-field>
+        <br />
         <!-- tags -->
         <v-select
           :items="tags"
@@ -24,12 +46,7 @@
           label="Select tag"
           :rules="[rules.required]"
         ></v-select>
-        <!-- link -->
-        <v-text-field
-          v-model="link"
-          label="Link"
-          :rules="[rules.required]">
-        </v-text-field>
+        <br />
         <!-- techs -->
         <v-select
           :items="allTechs"
@@ -42,6 +59,7 @@
           label="Select techs"
           :rules="[rules.required]"
         ></v-select>
+        <br />
         <!-- new tech -->
         <v-checkbox label="Add new technologies"
           v-model="checkbox"
@@ -67,9 +85,10 @@
         <!-- display for selected files -->
         <v-container>
           <v-layout row>
-            <v-list xs1 v-for="(file, index) in files" :key="index">
-              <span class="cyan files"><v-icon dark>present_to_all</v-icon> {{file.name}}</span>
-            </v-list>
+            <v-flex xs6 sm3 md2 lg2 class="thumbnail" v-for="(file, index) in files" :key="index">
+              <img :src="file.url" />
+              <span>{{file.file.name}}</span>
+            </v-flex>
           </v-layout>
         </v-container>
         <!-- select files -->
@@ -104,6 +123,7 @@ export default {
       tag: '',
       tags: ['website', 'web-app', 'mobile-app', 'graphic-design'],
       link: '',
+      repo: '',
       description: '',
       files: [],
       techs: '',
@@ -125,7 +145,12 @@ export default {
   methods: {
     // this function stores new selected files
     filesChanged (e) {
-      this.files = e.target.files
+      this.files = [] // reset files
+      for (var i = 0; i < e.target.files.length; ++i) {
+        let file = e.target.files[i]
+        let url = URL.createObjectURL(file) // create image url
+        this.files.push({file: file, url: url})
+      }
     },
     // this function adds the new project
     async addProject () {
@@ -142,6 +167,7 @@ export default {
         let data = new FormData()
         data.append('title', this.title)
         data.append('_link', this.link)
+        data.append('repo', this.repo)
         data.append('tag', this.tag)
         data.append('releaseDate', this.releaseDate)
         data.append('descriptions', JSON.stringify(descriptions))
@@ -151,7 +177,7 @@ export default {
         // append pictured to formdata
         for (var i = 0; i < this.files.length; i++) {
           let file = this.files[i]
-          data.append('pictures', file)
+          data.append('pictures', file.file)
         }
 
         // submit formdata to server

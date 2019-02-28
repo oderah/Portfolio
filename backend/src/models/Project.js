@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   const Project = sequelize.define('Project', {
     title: DataTypes.STRING,
     _link: DataTypes.STRING,
+    repo: DataTypes.STRING,
     tag: DataTypes.STRING,
     release_date: DataTypes.DATEONLY,
     ProfileId: DataTypes.INTEGER
