@@ -15,8 +15,8 @@ export default {
     })
     // return Api().post('portfolio', formdata)
   },
-  getProjects () {
-    return Api().get('portfolio')
+  getProjects (toGet) {
+    return Api().get(`portfolio?toGet=${toGet}`)
   },
   getProject (id) {
     return Api().get(`portfolio/${id}`)

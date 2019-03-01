@@ -11,6 +11,7 @@ const DESCRIPTION = require('../models').Description
 const PROJECTTECHS = require('../models').ProjectTechs
 var fs = require('fs')
 var path = require('path')
+var _ = require('lodash')
 var forEachAsync = require('forEachAsync').forEachAsync
 // const {sequelize} = require('../models')
 
@@ -290,7 +291,7 @@ async function addProject (req, res) {
 }
 
 async function getProjects (req, res) {
-  console.log('getting projects...')
+  console.log('getting projects...', req.query.recents)
   // var profile = await PROFILE.findById(1)
 
   // profile.getProjects().then(projects => {
@@ -307,9 +308,18 @@ async function getProjects (req, res) {
     },
     include: [DESCRIPTION, IMAGEPATH]
   }).then(projects => {
-    res.send({
-      projects: projects
-    })
+    if (req.query.toGet === 'recents') {
+      var ordered = _.orderBy(projects, ['release_date', 'title'], ['desc', 'asc'])
+      var recents = _.chunk(ordered, 6)[0]
+
+      res.send({
+        projects: recents
+      })
+    } else {
+      res.send({
+        projects: projects
+      })
+    }
   })
 }
 

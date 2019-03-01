@@ -203,7 +203,7 @@ export default {
     },
     // this function gets the projects from server
     async getProjects () {
-      const projects = await ProfileService.getProjects()
+      const projects = await ProfileService.getProjects('all')
       return projects
     },
     // this function navigates to the project with the specified id

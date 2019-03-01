@@ -487,6 +487,7 @@ export default {
     position: fixed;
     bottom: 5vh;
     right: 0;
+    z-index: 2;
   }
   .carousel {
     height: auto;
