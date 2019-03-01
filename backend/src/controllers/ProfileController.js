@@ -111,7 +111,7 @@ async function setPrograms (programs, profile) {
 }
 
 async function setTechs (techs, profile) {
-  // await TECH.destroy({where: {}, truncate: true})
+  await TECH.destroy({where: {}, truncate: true})
   await techs.forEach(async tech => {
     TECH.findOrCreate({where: tech}).spread(async (_tech, meta) => {
       await profile.addTech(_tech.id)

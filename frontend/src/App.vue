@@ -140,6 +140,10 @@ p {
   width: 100%;
   height: 100%;
 }
+.project-card {
+  border-radius: 5%;
+  background: radial-gradient(circle at top left, #322, #880E4F);
+}
 /* h2 {
   font-size: 2em;
 } */

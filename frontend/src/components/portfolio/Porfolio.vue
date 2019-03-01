@@ -12,9 +12,9 @@
       <v-flex xs12 sm12 md12 lg12 v-if="!add && projectsLoaded">
         <v-layout row wrap>
           <v-flex lg3 md4 sm6 xs12 v-for="(project, index) in projectsToDisplay" :key="project.id" style="padding: 15px;">
-            <Panel @click.native="() => {if (!edit) {goToProject(project.id)}}">
+            <Panel @click.native="() => {if (!edit) {goToProject(project.id)}}" class="project-card">
               <!-- Title -->
-              <span class="name" slot="title">{{project.title}}</span>
+              <span class="name project-title tech-names" slot="title">{{project.title}}</span>
               <!-- carousel -->
               <v-carousel slot="media" hide-delimiters hide-controls
                 class="carousel black"
@@ -34,9 +34,9 @@
                 </v-carousel-item>
               </v-carousel>
               <v-container class="carousel my-loader" slot="media" v-if="!picturesLoaded">
-                <span class="app-loading">Loading...</span>
+                <span class="app-loading tech-names">Loading...</span>
               </v-container>
-              <v-layout column slot="text" style="height: 100px;">
+              <v-layout column slot="text" style="height: 100px;" class="tech-names">
                 <p style="textAlign: left; overflow: hidden;">{{project.Descriptions[0].description || ''}} Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
               </v-layout>
               <v-layout row slot="actions">
@@ -47,7 +47,7 @@
                 <v-spacer />
                 <!-- Tag -->
                 <v-avatar
-                  class="title pink lighten-1 "
+                  class="title cyan"
                   size="30px">
                   <v-icon dark size="20px">
                     {{app_tags[project.tag]}}
@@ -342,5 +342,8 @@ export default {
   }
   .my-container {
     padding: 30px;
+  }
+  .project-title {
+    font-size: 2em;
   }
 </style>

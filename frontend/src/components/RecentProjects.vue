@@ -6,17 +6,17 @@
       </v-container>
       <v-layout row wrap fill-height>
         <v-flex xs12 sm12 md6 lg4 v-for="project in projects" :key="project.title">
-          <v-card class="card">
+          <v-card class="card project-card" @click.native="goToProject(project.id)">
             <v-card-media height="100px">
               <v-container fill-height fluid>
                 <!-- Card Title -->
-                <v-card-title class="project-title name" primary-title>
-                  {{project.title}}
+                <v-card-title class="project-title name tech-names" primary-title>
+                  <h2>{{project.title}}</h2>
                 </v-card-title>
               </v-container>
             </v-card-media>
             <!-- Card Text -->
-            <v-card-text style="text-align: left; overflow: hidden; height: 100px;">
+            <v-card-text style="text-align: left; overflow: hidden; height: 100px;" class="tech-names">
               {{project.Descriptions[0].description}}
             </v-card-text>
             <!-- Card Actions -->
@@ -28,7 +28,7 @@
               <v-spacer />
               <!-- Tag -->
               <v-avatar
-                class="title pink lighten-1"
+                class="title cyan"
                 size="30px">
                 <v-icon dark size="20px">
                   {{app_tags[project.tag]}}
@@ -92,7 +92,7 @@ export default {
     color: white;
   }
   .card {
-    margin: 5px;
+    /* margin: 5px; */
     height: 300px;
     box-shadow: 0 2px 10px 1px;
   }
