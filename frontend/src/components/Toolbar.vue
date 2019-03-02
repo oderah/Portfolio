@@ -47,6 +47,10 @@
           <v-list-tile @click="goContact">
             <v-list-tile-title>Contact</v-list-tile-title>
           </v-list-tile>
+          <!-- admin options -->
+          <v-list-tile v-for="(menu, index) in menuItems" :key="index" @click="menuItem(index)" v-if="$store.state.admin">
+            <v-list-tile-title>{{menu.menu}}</v-list-tile-title>
+          </v-list-tile>
         </v-list>
       </v-menu>
     </v-toolbar-items>
@@ -85,8 +89,17 @@ export default {
     logout () {
       console.log('Toolbar logout')
       this.$cookie.delete('admin')
+
+      // show goodbye toast
+      this.$toasted.show(`Bye ${this.$store.state.admin.username} :)`, {
+        duration: 3000,
+        position: 'bottom-right',
+        closeOnSwipe: true,
+        theme: 'bubble',
+        className: 'cyan'
+      })
+
       this.$store.dispatch('setAdmin', null)
-      this.$router.push('/')
     }
   }
 }

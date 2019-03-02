@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container>
-      <v-flex xs6 offset-xs3>
+      <v-flex>
         <Panel _class="pink darken-4">
           <div slot="title">
             <h1>Admin</h1>
@@ -17,7 +17,8 @@
               v-model="password"
               type="password"
               label="password"
-              required>
+              required
+              @keyup.enter.native="login">
             </v-text-field>
             <v-btn
               dark
@@ -40,7 +41,8 @@ export default {
   data () {
     return {
       email: '',
-      password: ''
+      password: '',
+      from: ''
     }
   },
   components: {
@@ -53,19 +55,40 @@ export default {
           email: this.email,
           password: this.password
         })
+        console.log('login response', response)
         // this.admin['username'] = response.data.username
         // this.admin['email'] = response.data.email
         // this.admin = response.data
 
-        let admin = {
-          email: response.data.admin.email,
-          username: response.data.admin.username
+        if (response.data) {
+          let admin = {
+            email: response.data.admin.email,
+            username: response.data.admin.username
+          }
+          this.$store.dispatch('setAdmin', admin)
+
+          this.$cookie.set('admin', JSON.stringify(admin), {expires: 7})
+
+          // show log in success toast
+          this.$toasted.show(`Signed in as ${admin.username} :)`, {
+            duration: 3000,
+            position: 'bottom-right',
+            closeOnSwipe: true,
+            theme: 'bubble',
+            className: 'cyan'
+          })
+
+          this.$router.push({path: this.from})
+        } else {
+          // show log in failure toast
+          this.$toasted.show('Invalid Credentials!!', {
+            duration: 3000,
+            position: 'bottom-right',
+            closeOnSwipe: true,
+            theme: 'bubble',
+            className: 'pink darken-4'
+          })
         }
-        this.$store.dispatch('setAdmin', admin)
-
-        this.$cookie.set('admin', JSON.stringify(admin), {expires: 7})
-
-        this.$router.push('/')
       } catch (err) {
         console.log(err)
       }
@@ -75,6 +98,9 @@ export default {
   },
   mounted () {
     window.scrollTo(0, 0)
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => (vm.from = from.path)) // store from path
   }
 }
 </script>

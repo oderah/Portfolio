@@ -11,15 +11,17 @@ module.exports = {
       })
       console.log('admin ==>', admin)
       if (!admin) {
-        return res.status(403).send({
-          error: '!admin : Incorrect login info!'
-        })
+        // return res.status(403).send({
+        //   error: '!admin : Incorrect login info!'
+        // })
+        res.send(false)
       }
 
       if (!(admin.password === password)) {
-        return res.status(403).send({
-          error: 'wrong password : Incorrect login info!'
-        })
+        // return res.status(403).send({
+        //   error: 'wrong password : Incorrect login info!'
+        // })
+        res.send(false)
       }
 
       res.send({

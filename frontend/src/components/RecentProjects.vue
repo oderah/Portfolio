@@ -97,7 +97,7 @@ export default {
     box-shadow: 0 2px 10px 1px;
   }
   .card:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
     transition-duration: 0.1s;
   }
   .project-title {

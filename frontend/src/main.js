@@ -8,13 +8,16 @@ import App from './App'
 import router from './router'
 import { sync } from 'vuex-router-sync'
 import store from '@/store/store'
+import Toasted from 'vue-toasted'
 
 var VueCookie = require('vue-cookie')
+// var Toasted = require('vue-toasted')
 
 Vue.config.productionTip = false
 
 Vue.use(Vuetify)
 Vue.use(VueCookie)
+Vue.use(Toasted)
 
 Vue.directive('lazy', {
   inserted (el, binding, vnode) {
