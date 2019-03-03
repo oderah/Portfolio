@@ -24,18 +24,18 @@
             <v-divider />
             <!-- Email tile -->
             <v-list-tile>
-              <v-list-tile-title><span class="name">Email:</span> <span class="right">{{profile.email}}</span>  </v-list-tile-title>
+              <v-list-tile-title><span class="name">Email:</span> <span class="right"><a :href="mailTo">{{profile.email}}</a></span>  </v-list-tile-title>
             </v-list-tile>
             <v-divider />
             <!-- Telphone tile -->
             <v-list-tile>
               <v-list-tile-title><span class="name">Telephone:</span> <span class="right">{{profile.tel}}</span>  </v-list-tile-title>
             </v-list-tile>
-            <!-- Socila Networks tile -->
+            <!-- Social Networks tile -->
             <template v-for="(socialNetwork, index) in profile.socials">
               <v-divider :key="socialNetwork.name"/>
               <v-list-tile :key="index">
-                <v-list-tile-title><span class="name">{{socialNetwork.name}}:</span> <span class="right">{{socialNetwork.social}}</span>  </v-list-tile-title>
+                <v-list-tile-title><span class="name">{{socialNetwork.name}}:</span> <span class="right"><a :href="socialNetwork.social">{{socialNetwork.social}}</a></span>  </v-list-tile-title>
               </v-list-tile>
             </template>
           </v-list>
@@ -220,6 +220,18 @@ export default {
       }
       this.edit = false
       this.edit = true
+    },
+    socials (socialNetwork) {
+      if (socialNetwork.name === 'twitter') {
+        return `https://www.twitter.com/${socialNetwork.social}`
+      } else if (socialNetwork.name === 'instagram') {
+        return `https://www.instagram.com/${socialNetwork.social}`
+      }
+    }
+  },
+  computed: {
+    mailTo: function () {
+      return `mailto:${this.profile.email}`
     }
   }
 }
