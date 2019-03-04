@@ -32,93 +32,84 @@
               <v-list-tile-title><span class="name">Telephone:</span> <span class="right">{{profile.tel}}</span>  </v-list-tile-title>
             </v-list-tile>
             <!-- Social Networks tile -->
-            <template v-for="(socialNetwork, index) in profile.socials">
-              <v-divider :key="socialNetwork.name"/>
-              <v-list-tile :key="index">
-                <v-list-tile-title><span class="name">{{socialNetwork.name}}:</span> <span class="right"><a :href="socialNetwork.social">{{socialNetwork.social}}</a></span>  </v-list-tile-title>
-              </v-list-tile>
-            </template>
+            <div v-if="profile.socials">
+              <h2 class="socials-heading">...Social Networks...</h2>
+              <template v-for="(socialNetwork, index) in profile.socials">
+                <v-divider :key="socialNetwork.name"/>
+                <v-list-tile :key="index">
+                  <v-list-tile-title><span class="name">{{socialNetwork.name}}:</span> <span class="right"><a :href="social(socialNetwork)">@{{socialNetwork.social}}</a></span>  </v-list-tile-title>
+                </v-list-tile>
+              </template>
+            </div>
           </v-list>
         </v-layout>
       </v-container>
       <!-- if edit -->
       <v-container slot="text" v-if="edit">
         <!-- Main form -->
-        <v-form class="white">
+        <v-form class="grey lighten-2">
           <v-layout column>
-            <v-layout row>
+            <v-layout column>
               <!-- First Name -->
-              <v-flex>
-                <v-text-field
-                  label="First Name"
-                  v-model="contactInfo.firstName"
-                  required
-                  flat>
-                </v-text-field>
-              </v-flex>
-              <v-spacer />
+              <v-text-field
+                label="First Name"
+                v-model="contactInfo.firstName"
+                required
+                solo>
+              </v-text-field>
+              <br />
               <!-- Last Name -->
-              <v-flex>
-                <v-text-field
-                  label="Last Name"
-                  v-model="contactInfo.lastName"
-                  required
-                  flat>
-                </v-text-field>
-              </v-flex>
+              <v-text-field
+                label="Last Name"
+                v-model="contactInfo.lastName"
+                required
+                solo>
+              </v-text-field>
+              <br />
               <v-spacer />
               <!-- Email -->
-              <v-flex>
-                <v-text-field
-                  label="Email"
-                  v-model="contactInfo.email"
-                  required
-                  flat>
-                </v-text-field>
-              </v-flex>
-              <v-spacer />
+              <v-text-field
+                solo
+                label="Email"
+                v-model="contactInfo.email"
+                required>
+              </v-text-field>
+              <br />
               <!-- Telephone -->
-              <v-flex>
-                <v-text-field
-                  label="Telphone"
-                  v-model="contactInfo.tel"
-                  required
-                  flat>
-                </v-text-field>
-              </v-flex>
+              <v-text-field
+                label="Telphone"
+                v-model="contactInfo.tel"
+                required
+                solo>
+              </v-text-field>
             </v-layout>
             <br />
             <!-- Social Networks -->
             <h2>Social Networks</h2>
-            <br />
-            <v-layout row v-for="(socialNetwork, index) in socials" :key="index">
-              <!-- Name -->
-              <v-flex xs5>
-                <v-text-field
-                  label="Name"
-                  v-model="socialNetwork.name"
-                  required
-                  flat>
-                </v-text-field>
-              </v-flex>
-              <v-spacer />
-              <br />
-              <!-- SocialID -->
-              <v-flex xs5>
-                <v-text-field
-                  label="SocialID"
-                  v-model="socialNetwork.social"
-                  required
-                  flat>
-                </v-text-field>
-              </v-flex>
-              <v-spacer />
-              <br />
-              <!-- Delete -->
-              <v-flex xs1 style="paddingTop: 10px;">
-                <v-btn fab flat small dark color="pink" @click="removerSocial(socialNetwork)">
-                  <v-icon size="20px">cancel</v-icon>
-                </v-btn>
+            <v-layout row wrap>
+              <v-flex xs12 sm6 md4 lg3 v-for="(socialNetwork, index) in socials" :key="index" class="socials-form">
+                <v-container class="elevated">
+                  <!-- Name -->
+                  <v-text-field
+                    label="Name"
+                    v-model="socialNetwork.name"
+                    required
+                    solo>
+                  </v-text-field>
+                  <br />
+                  <!-- SocialID -->
+                  <v-text-field
+                    label="SocialID"
+                    v-model="socialNetwork.social"
+                    required
+                    solo>
+                  </v-text-field>
+                  <br />
+                  <!-- Delete -->
+                  <v-btn fab small dark color="pink" @click="removerSocial(socialNetwork)">
+                    <v-icon size="20px">cancel</v-icon>
+                  </v-btn>
+                </v-container>
               </v-flex>
             </v-layout>
           </v-layout>
@@ -129,21 +120,27 @@
         </v-form>
       </v-container>
       <!-- Actions -->
-      <v-layout row slot="actions" v-if="this.$store.state.admin">
-        <!-- Edit button -->
-        <v-btn class="save" fab small @click="editContactInfo" v-if="!edit">
-          <v-icon size="20px">edit</v-icon>
-        </v-btn>
-        <!-- Cancel button -->
-        <v-btn class="cancel" fab small dark color="pink" @click="done" v-if="edit">
-          <v-icon size="20px">cancel</v-icon>
-        </v-btn>
-        <!-- Save button -->
-        <v-btn class="save" fab small dark color="cyan" @click="saveContactInfo" v-if="edit">
-          <v-icon size="20px">save</v-icon>
-        </v-btn>
-      </v-layout>
+      <v-container slot="actions" v-if="this.$store.state.admin">
+        <v-layout row class="profile-admin-buttons">
+          <!-- Edit button -->
+          <v-btn fab small @click="editContactInfo" v-if="!edit">
+            <v-icon size="20px">edit</v-icon>
+          </v-btn>
+        </v-layout>
+        <v-layout row class="profile-admin-buttons-edit">
+          <!-- Cancel button -->
+          <v-btn fab small dark color="pink" @click="done" v-if="edit">
+            <v-icon size="20px">cancel</v-icon>
+          </v-btn>
+          <!-- Save button -->
+          <v-btn fab small dark color="cyan" @click="saveContactInfo" v-if="edit">
+            <v-icon size="20px">save</v-icon>
+          </v-btn>
+        </v-layout>
+      </v-container>
     </Panel>
+    <br />
+    <br />
   </v-container>
 </template>
 
@@ -221,7 +218,8 @@ export default {
       this.edit = false
       this.edit = true
     },
-    socials (socialNetwork) {
+    social (socialNetwork) {
+      console.log('social => ', socialNetwork)
       if (socialNetwork.name === 'twitter') {
         return `https://www.twitter.com/${socialNetwork.social}`
       } else if (socialNetwork.name === 'instagram') {
@@ -245,5 +243,15 @@ export default {
   }
   .header {
     background-color: #212121
+  }
+  .socials-heading {
+    font-family: cursive;
+    text-align: center;
+  }
+  .elevated {
+    box-shadow: 0px 1px 5px 0px;
+  }
+  .socials-form {
+    margin: 15px;
   }
 </style>

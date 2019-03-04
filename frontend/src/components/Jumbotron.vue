@@ -28,7 +28,7 @@
           </v-layout>
         </v-container>
         <!-- view more -->
-        <v-btn dark class="jumbotron-view-more" @click="goPortfolio">
+        <v-btn dark round class="jumbotron-view-more" @click="goPortfolio">
           View More
         </v-btn>
       </v-flex>

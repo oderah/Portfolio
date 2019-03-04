@@ -41,7 +41,9 @@
               </v-layout>
               <v-layout row slot="actions">
                 <!-- Info button -->
-                <v-btn>
+                <v-btn
+                dark
+                round>
                   info
                 </v-btn>
                 <v-spacer />
@@ -76,7 +78,7 @@
       <!-- Control Panel -->
       <v-flex class="control">
         <v-container>
-          <Panel class="education">
+          <Panel class="education round">
             <!-- sorting -->
             <v-layout column slot="text">
               <v-layout column>
@@ -90,7 +92,7 @@
               </v-layout>
               <!-- filter -->
               <v-menu dark fixed offset-y :close-on-content-click="false">
-                <v-btn dark slot="activator" class="pink darken-4">
+                <v-btn dark round slot="activator" class="pink darken-4">
                   filter
                 </v-btn>
                 <v-list class="pink darken-4" style="width: 200px;">
@@ -332,8 +334,8 @@ export default {
   .control {
     position: fixed;
     top: 30vh;
-    right: -160px;
-    width: 240px;
+    right: -170px;
+    width: 250px;
     transition-duration: 0.3s;
   }
   .control:hover {
@@ -345,5 +347,8 @@ export default {
   }
   .project-title {
     font-size: 2em;
+  }
+  .round {
+    border-radius: 5%;
   }
 </style>

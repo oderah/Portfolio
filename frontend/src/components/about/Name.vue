@@ -14,23 +14,26 @@
         </v-layout>
       </v-container>
       <v-container slot="text" v-if="edit">
-        <textarea rows="2" v-model="titles">
-        </textarea>
+        <v-text-field v-model="titles" solo hint="Enter titles"></v-text-field>
       </v-container>
-      <v-layout row slot="actions" v-if="this.$store.state.admin">
-        <!-- Edit button -->
-        <v-btn class="save" fab small @click="editTitles" v-if="!edit">
-          <v-icon size="20px">edit</v-icon>
-        </v-btn>
-        <!-- Cancel button -->
-        <v-btn class="cancel" fab small dark color="pink" @click="done" v-if="edit">
-          <v-icon size="20px">cancel</v-icon>
-        </v-btn>
-        <!-- Save button -->
-        <v-btn class="save" fab small dark color="cyan" @click="saveTitles" v-if="edit">
-          <v-icon size="20px">save</v-icon>
-        </v-btn>
-      </v-layout>
+      <v-container slot="actions" v-if="this.$store.state.admin">
+        <v-layout row class="profile-admin-buttons">
+          <!-- Edit button -->
+          <v-btn fab small @click="editTitles" v-if="!edit">
+            <v-icon size="20px">edit</v-icon>
+          </v-btn>
+        </v-layout>
+        <v-layout row class="profile-admin-buttons-edit">
+          <!-- Cancel button -->
+          <v-btn fab small dark color="pink" @click="done" v-if="edit">
+            <v-icon size="20px">cancel</v-icon>
+          </v-btn>
+          <!-- Save button -->
+          <v-btn fab small dark color="cyan" @click="saveTitles" v-if="edit">
+            <v-icon size="20px">save</v-icon>
+          </v-btn>
+        </v-layout>
+      </v-container>
     </Panel>
   </v-flex>
 </template>

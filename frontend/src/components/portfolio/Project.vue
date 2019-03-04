@@ -31,7 +31,7 @@
           <!-- Tag -->
           <span>
             <v-avatar
-              class="title pink lighten-1 "
+              class="title cyan"
               size="30px">
               <v-icon dark size="20px">
                 {{app_tags[project.tag]}}

@@ -30,56 +30,46 @@
       </v-container>
       <v-container slot="text" v-if="edit">
         <v-container fluid>
-          <v-layout column>
+          <v-layout row wrap>
             <v-flex xs12 v-for="program in programs" :key="program.id">
               <v-form class="white">
-                <v-layout row>
-                  <v-flex>
-                    <v-text-field
-                      label="Insitution Name"
-                      v-model="program.institution"
-                      required
-                      flat>
-                    </v-text-field>
-                  </v-flex>
-                  <v-spacer />
-                  <v-flex>
-                    <v-text-field
-                      label="Title"
-                      v-model="program.title"
-                      required
-                      flat>
-                    </v-text-field>
-                  </v-flex>
-                  <v-spacer />
-                  <v-flex>
-                    <v-text-field
-                      label="Credentials"
-                      v-model="program.credential"
-                      required
-                      flat>
-                    </v-text-field>
-                  </v-flex>
-                  <v-spacer />
-                  <v-flex>
-                    <v-text-field
-                      label="Program Start"
-                      v-model="program.start"
-                      required
-                      flat>
-                    </v-text-field>
-                  </v-flex>
-                  <v-spacer />
-                  <v-flex>
-                    <v-text-field
-                      label="Program End"
-                      v-model="program.end"
-                      required
-                      flat>
-                    </v-text-field>
-                  </v-flex>
+                <v-layout column>
+                  <v-text-field
+                    label="Insitution Name"
+                    v-model="program.institution"
+                    required
+                    solo>
+                  </v-text-field>
+                  <br />
+                  <v-text-field
+                    label="Title"
+                    v-model="program.title"
+                    required
+                    solo>
+                  </v-text-field>
+                  <br />
+                  <v-text-field
+                    label="Credentials"
+                    v-model="program.credential"
+                    required
+                    solo>
+                  </v-text-field>
+                  <br />
+                  <v-text-field
+                    label="Program Start"
+                    v-model="program.start"
+                    required
+                    solo>
+                  </v-text-field>
+                  <br />
+                  <v-text-field
+                    label="Program End"
+                    v-model="program.end"
+                    required
+                    solo>
+                  </v-text-field>
                   <v-flex style="paddingTop: 10px;">
-                    <v-btn fab flat small dark color="pink" @click="removeProgram(program)">
+                    <v-btn fab small dark color="pink" @click="removeProgram(program)">
                       <v-icon size="20px">cancel</v-icon>
                     </v-btn>
                   </v-flex>
@@ -90,24 +80,28 @@
           </v-layout>
         </v-container>
       </v-container>
-      <v-layout row slot="actions" v-if="this.$store.state.admin">
+      <v-container slot="actions" v-if="this.$store.state.admin">
+        <v-layout row class="profile-admin-buttons">
+          <!-- Edit button -->
+          <v-btn fab small @click="editPrograms" v-if="!edit">
+            <v-icon size="20px">edit</v-icon>
+          </v-btn>
+        </v-layout>
+        <v-layout row class="profile-admin-buttons-edit">
+          <!-- Cancel button -->
+          <v-btn fab small dark color="pink" @click="done" v-if="edit">
+            <v-icon size="20px">cancel</v-icon>
+          </v-btn>
+          <!-- Save button -->
+          <v-btn fab small dark color="cyan" @click="savePrograms" v-if="edit">
+            <v-icon size="20px">save</v-icon>
+          </v-btn>
+        </v-layout>
         <!-- Add button -->
-        <v-btn class="add" fab small dark color="primary" @click="addProgramForm" v-if="edit">
+        <v-btn class="add" fab small dark color="primary" @click="addProgramForm"  v-if="edit">
           <v-icon size="20px">add</v-icon>
         </v-btn>
-        <!-- Edit button -->
-        <v-btn class="save" fab small @click="editPrograms" v-if="!edit">
-          <v-icon size="20px">edit</v-icon>
-        </v-btn>
-        <!-- Cancel button -->
-        <v-btn class="cancel" fab small dark color="pink" @click="done" v-if="edit">
-          <v-icon size="20px">cancel</v-icon>
-        </v-btn>
-        <!-- Save button -->
-        <v-btn class="save" fab small dark color="cyan" @click="savePrograms" v-if="edit">
-          <v-icon size="20px">save</v-icon>
-        </v-btn>
-      </v-layout>
+      </v-container>
     </Panel>
   </v-flex>
 </template>
@@ -219,7 +213,6 @@ export default {
 <style scoped>
   form {
     padding: 5px;
-    border-radius: 15px;
   }
   ._card {
     box-shadow: 0 2px 20px 0;

@@ -33,23 +33,27 @@
           </v-flex>
         </v-layout>
         <v-container slot="text" v-if="edit">
-          <textarea rows="10" v-model="abouts">
+          <textarea rows="10" v-model="abouts" class="grey lighten-4">
           </textarea>
         </v-container>
-        <v-layout row slot="actions" v-if="this.$store.state.admin">
-          <!-- Edit button -->
-          <v-btn class="save" fab small dark @click="editText" v-if="!edit">
-            <v-icon size="20px">edit</v-icon>
-          </v-btn>
-          <!-- Cancel button -->
-          <v-btn class="cancel" fab small dark color="pink" @click="done" v-if="edit">
-            <v-icon size="20px">cancel</v-icon>
-          </v-btn>
-          <!-- Save button -->
-          <v-btn class="save" fab small dark color="cyan" @click="saveText" v-if="edit">
-            <v-icon size="20px">save</v-icon>
-          </v-btn>
-        </v-layout>
+        <v-container slot="actions" v-if="this.$store.state.admin">
+          <v-layout row class="profile-admin-buttons">
+            <!-- Edit button -->
+            <v-btn fab small dark @click="editText" v-if="!edit">
+              <v-icon size="20px">edit</v-icon>
+            </v-btn>
+          </v-layout>
+          <v-layout row class="profile-admin-buttons-edit">
+            <!-- Cancel button -->
+            <v-btn fab small dark color="pink" @click="done" v-if="edit">
+              <v-icon size="20px">cancel</v-icon>
+            </v-btn>
+            <!-- Save button -->
+            <v-btn fab small dark color="cyan" @click="saveText" v-if="edit">
+              <v-icon size="20px">save</v-icon>
+            </v-btn>
+          </v-layout>
+        </v-container>
       </Panel>
     </v-flex>
     <br >

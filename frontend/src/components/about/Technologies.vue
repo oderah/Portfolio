@@ -5,30 +5,40 @@
         <h2 class="name tech-names">Technologies</h2>
       </v-container>
       <v-layout row wrap slot="text" v-if="!edit">
-        <v-flex xs1 v-for="tech in profile.techs" :key="tech.id">
+        <v-flex xs6 sm2 v-for="tech in profile.techs" :key="tech.id">
           <v-container class="tech-names">
             <h3>{{tech.tech}}</h3>
           </v-container>
         </v-flex>
       </v-layout>
       <v-container slot="text" v-if="edit">
-        <textarea rows="2" v-model="techs">
-        </textarea>
+        <!-- <textarea rows="2" v-model="techs">
+        </textarea> -->
+        <v-text-field
+        solo
+        v-model="techs"
+        hint="Enter technologies">
+
+        </v-text-field>
       </v-container>
-      <v-layout row slot="actions" v-if="this.$store.state.admin">
-        <!-- Edit button -->
-        <v-btn class="save" fab small @click="editTechs" v-if="!edit">
-          <v-icon size="20px">edit</v-icon>
-        </v-btn>
-        <!-- Cancel button -->
-        <v-btn class="cancel" fab small dark color="pink" @click="done" v-if="edit">
-          <v-icon size="20px">cancel</v-icon>
-        </v-btn>
-        <!-- Save button -->
-        <v-btn class="save" fab small dark color="cyan" @click="saveTechs" v-if="edit">
-          <v-icon size="20px">save</v-icon>
-        </v-btn>
-      </v-layout>
+      <v-container slot="actions" v-if="this.$store.state.admin" >
+        <v-layout row class="profile-admin-buttons">
+          <!-- Edit button -->
+          <v-btn fab small @click="editTechs" v-if="!edit">
+            <v-icon size="20px">edit</v-icon>
+          </v-btn>
+        </v-layout>
+        <v-layout row class="profile-admin-buttons-edit">
+          <!-- Cancel button -->
+          <v-btn fab small dark color="pink" @click="done" v-if="edit">
+            <v-icon size="20px">cancel</v-icon>
+          </v-btn>
+          <!-- Save button -->
+          <v-btn fab small dark color="cyan" @click="saveTechs" v-if="edit">
+            <v-icon size="20px">save</v-icon>
+          </v-btn>
+        </v-layout>
+      </v-container>
     </Panel>
   </v-flex>
 </template>

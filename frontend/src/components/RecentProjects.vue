@@ -22,6 +22,8 @@
             <!-- Card Actions -->
             <v-card-actions>
               <v-btn
+              dark
+              round
               @click="goToProject(project.id)">
                 info
               </v-btn>
@@ -92,7 +94,7 @@ export default {
     color: white;
   }
   .card {
-    /* margin: 5px; */
+    margin: 5px;
     height: 300px;
     box-shadow: 0 2px 10px 1px;
   }

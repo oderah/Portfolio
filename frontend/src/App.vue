@@ -65,23 +65,31 @@ textarea {
 .tech-names {
   color: #CFD8DC;
 }
-.cancel, .save, .add {
+/* .cancel, .save, .add {
   position: absolute;
 }
 .cancel {
-  /* top: 89%; */
   bottom: 10px;
   left: 90%;
 }
 .save {
-  /* top: 89%; */
   bottom: 10px;
   left: 95%;
+} */
+.profile-admin-buttons {
+  position: relative;
+  bottom: 0;
+  left: calc(100% - 40px);
+}
+.profile-admin-buttons-edit {
+  position: relative;
+  bottom: 0;
+  left: calc(100% - 80px);
 }
 .add {
-  /* top: 89%; */
-  bottom: 10px;
-  left: 85%;
+  position: absolute;
+  bottom: 35px;
+  left: 15px;
 }
 .profile-pic {
   position: fixed;
