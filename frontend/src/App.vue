@@ -42,6 +42,9 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
   /* background: radial-gradient(circle at top left, #263238, #607D8B, #ECEFF1, #90A4AE, #607D8B) */
+  /* background: radial-gradient(ellipse at top left, grey,  #880E4F, #D45699); */
+  /* background: radial-gradient(circle at top left,#000, #006064, #0097A7, cyan, #0097A7, #90A4AE, #000); */
+  /* background: linear-gradient(to bottom, #222, #393C40, #72797F, #393C40, #222); */
 }
 h1 {
   /* color: #CFD8DC; */

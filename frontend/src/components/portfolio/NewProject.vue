@@ -84,7 +84,7 @@
         </v-text-field>
         <!-- display for selected files -->
         <v-container>
-          <v-layout row>
+          <v-layout row wrap>
             <v-flex xs6 sm3 md2 lg2 class="thumbnail" v-for="(file, index) in files" :key="index">
               <img :src="file.url" />
               <span>{{file.file.name}}</span>

@@ -181,7 +181,7 @@
         <Panel _class="pink darken-4">
           <h1 slot="title" class="name tech-names">Images</h1>
           <v-layout column slot="text">
-            <v-layout row v-if="picsLoaded">
+            <v-layout row wrap v-if="picsLoaded">
               <v-flex xs6 sm3 md2 lg2 class="thumbnail" v-for="image in changes.pictures" :key="image.id">
                 <img :src="image.url" :alt="'thumbnail for image ' + image.id" />
                 <!-- delete -->

@@ -37,7 +37,7 @@
               <template v-for="(socialNetwork, index) in profile.socials">
                 <v-divider :key="socialNetwork.name"/>
                 <v-list-tile :key="index">
-                  <v-list-tile-title><span class="name">{{socialNetwork.name}}:</span> <span class="right"><a :href="social(socialNetwork)">@{{socialNetwork.social}}</a></span>  </v-list-tile-title>
+                  <v-list-tile-title><span class="name">{{socialNetwork.name}}:</span> <span class="right"><a :href="social(socialNetwork)" target="_blank">@{{socialNetwork.social}}</a></span>  </v-list-tile-title>
                 </v-list-tile>
               </template>
             </div>

@@ -56,15 +56,17 @@
                   </v-text-field>
                   <br />
                   <v-text-field
-                    label="Program Start"
+                    label="Program Start (yyyy/mm/dd)"
                     v-model="program.start"
+                    hint="(yyyy/mm/dd)"
                     required
                     solo>
                   </v-text-field>
                   <br />
                   <v-text-field
-                    label="Program End"
+                    label="Program End (yyyy/mm/dd)"
                     v-model="program.end"
+                    hint="(yyyy/mm/dd)"
                     required
                     solo>
                   </v-text-field>

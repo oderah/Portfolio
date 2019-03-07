@@ -1,7 +1,7 @@
 <template>
   <v-toolbar fixed app dark>
     <v-toolbar-title>
-      <v-btn flat fab @click="goHome" class="title">
+      <v-btn flat fab @click="goHome" class="title name home">
         <!-- <v-avatar
           class="title cyan"
           size="50px">
@@ -107,5 +107,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+  .home {
+    font-weight: bold;
+  }
 </style>
