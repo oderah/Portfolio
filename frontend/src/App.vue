@@ -3,6 +3,7 @@
     <v-app>
       <main>
         <Toolbar />
+        <ProfileAvatar />
         <router-view>
         </router-view>
         <Footer />
@@ -14,12 +15,14 @@
 <script>
 import Toolbar from '@/components/Toolbar'
 import Footer from '@/components/Footer'
+import ProfileAvatar from '@/components/ProfileAvatar'
 
 export default {
   name: 'App',
   components: {
     Footer,
-    Toolbar
+    Toolbar,
+    ProfileAvatar
   },
   mounted () {
     let admin = this.$cookie.get('admin')
@@ -94,18 +97,6 @@ textarea {
   bottom: 35px;
   left: 15px;
 }
-.profile-pic {
-  position: fixed;
-  top: 10vh;
-  right: 0;
-  z-index: 2;
-  box-shadow: 0 0 15px 5px black;
-  background: url('./assets/landing.svg');
-}
-.profile-pic:hover {
-  transform: scale(1.025);
-  transition-duration: 0.2s;
-}
 p, h2 {
   text-align: left;
 }
@@ -158,25 +149,4 @@ p {
 /* h2 {
   font-size: 2em;
 } */
-/* xs */
-@media only screen and (max-width: 600px) {
-  .profile-pic {
-    transform: scale(0.6);
-    right: -6.5vw;
-  }
-}
-/* sm */
-@media only screen and (max-width: 960px) and (min-width: 601px) {
-  .profile-pic {
-    transform: scale(0.8);
-    right: -2vw;
-  }
-}
-/* md */
-@media only screen and (max-width: 1264px) and (min-width: 961px) {
-  .profile-pic {
-    transform: scale(0.9);
-    right: -1vw;
-  }
-}
 </style>

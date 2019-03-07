@@ -31,6 +31,8 @@ module.exports = (app) => {
   app.post('/admin/login', upload.none(), AuthenticationController.login)
   app.get('/about', ProfileController.getProfile)
   app.post('/about', upload.none(), ProfileController.setProfile)
+  app.post('/about/pic', ProfileController.setProfilePic)
+  app.get('/about/pic', ProfileController.getProfilePic)
   app.get('/portfolio', ProfileController.getProjects)
   app.post('/portfolio/:id', ProfileController.deleteProject)
   app.get('/portfolio/:id', ProfileController.getProject)

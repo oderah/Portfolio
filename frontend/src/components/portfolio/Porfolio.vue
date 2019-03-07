@@ -1,10 +1,5 @@
 <template>
   <div class="my-container">
-    <!-- Profile Pic -->
-    <v-avatar
-      size="150px"
-      class="white profile-pic">
-    </v-avatar>
     <v-layout column>
       <!-- Add Project Form -->
       <NewProject v-if="add" />

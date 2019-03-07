@@ -9,7 +9,7 @@ var path = require('path')
 const app = express()
 app.use(express.static(path.join(__dirname, '../pictures')))
 app.use(morgan('combined'))
-app.use(bodyParser.json())
+app.use(bodyParser.json({limit: '50mb'}))
 app.use(cors())
 
 // app.set('port', 8080)
@@ -23,7 +23,7 @@ app.get('/status', (req, res) => {
 require('./routes')(app)
 
 sequelize.query('SET FOREIGN_KEY_CHECKS = 0', {raw: true}).then(() => {
-  sequelize.sync().then(() => {
+  sequelize.sync({}).then(() => {
     app.listen(config.port)
     console.log(`Server started on port ${config.port}`)
   })

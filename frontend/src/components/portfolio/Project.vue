@@ -1,10 +1,5 @@
 <template>
   <div>
-    <!-- Profile Pic -->
-    <v-avatar
-      size="150px"
-      class="white profile-pic">
-    </v-avatar>
     <v-layout column v-if="this.$store.state.admin && !edit" class="admin-options">
       <!-- edit button -->
       <v-btn

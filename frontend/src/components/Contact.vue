@@ -1,10 +1,5 @@
 <template>
   <v-container>
-    <!-- Profile Pic -->
-    <v-avatar
-      size="150px"
-      class="white profile-pic">
-    </v-avatar>
     <!-- Contact Card -->
     <Panel class="header">
       <!-- Title -->

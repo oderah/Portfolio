@@ -2,11 +2,6 @@
   <v-toolbar fixed app dark>
     <v-toolbar-title>
       <v-btn flat fab @click="goHome" class="title name home">
-        <!-- <v-avatar
-          class="title cyan"
-          size="50px">
-          {{avatar}}
-        </v-avatar> -->
         {{avatar}}
       </v-btn>
     </v-toolbar-title>

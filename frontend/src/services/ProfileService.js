@@ -7,13 +7,18 @@ export default {
   setProfile (profile) {
     return Api().post('about', profile)
   },
+  setProfilePic (base64) {
+    return Api().post('about/pic', {base64})
+  },
+  getProfilePic () {
+    return Api().get('about/pic')
+  },
   addProject (formdata) {
     return Api().post('portfolio', formdata, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     })
-    // return Api().post('portfolio', formdata)
   },
   getProjects (toGet) {
     return Api().get(`portfolio?toGet=${toGet}`)

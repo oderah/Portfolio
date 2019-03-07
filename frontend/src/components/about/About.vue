@@ -1,11 +1,5 @@
 <template>
   <v-container>
-    <!-- Profile Pic -->
-    <v-avatar
-      size="150px"
-      class="white profile-pic">
-      Pic
-    </v-avatar>
     <br >
     <!-- Name -->
     <Name :profile="profile" @update="reloadProfile"/>

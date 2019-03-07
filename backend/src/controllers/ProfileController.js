@@ -629,6 +629,29 @@ async function editProject (req, res) {
   })
 }
 
+// this function adds a profile image to the profilePic
+function setProfilePic (req, res) {
+  console.log('setProfilePic', req.body.base64)
+  let pathToFile = path.join(__dirname, '/../../pictures/profile/profile-pic.txt')
+  fs.writeFile(pathToFile, req.body.base64, (err) => {
+    if (err) {
+      throw err
+    }
+    res.send(true)
+  })
+}
+
+// this function returns the profile picture
+function getProfilePic (req, res) {
+  let pathToFile = path.join(__dirname, '/../../pictures/profile/profile-pic.txt')
+  fs.readFile(pathToFile, (err, buff) => {
+    if (err) {
+      throw err
+    }
+    res.send(buff.toString())
+  })
+}
+
 module.exports = {
   getProfile: getProfile,
   setProfile: setProfile,
@@ -639,5 +662,7 @@ module.exports = {
   deleteProject: deleteProject,
   getAllTechs: getAllTechs,
   getProjectTechs: getProjectTechs,
-  editProject: editProject
+  editProject: editProject,
+  getProfilePic: getProfilePic,
+  setProfilePic: setProfilePic
 }

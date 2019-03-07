@@ -1,10 +1,5 @@
 <template>
   <v-container fluid>
-    <!-- Profile Pic -->
-    <v-avatar
-      size="150px"
-      class="white profile-pic">
-    </v-avatar>
     <v-layout class="jumbotron" row>
       <!-- Left -->
       <v-flex class="left" sm6 md4>
