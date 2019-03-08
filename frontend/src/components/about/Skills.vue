@@ -1,5 +1,5 @@
 <template>
-  <v-flex xs12>
+  <v-flex xs12 lg10 class="flex-lg8">
     <Panel class="pink-gradient">
       <v-container slot="title">
         <h2 class="name tech-names">Skills</h2>

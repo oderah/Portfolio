@@ -146,6 +146,13 @@ p {
   border-radius: 5%;
   background: radial-gradient(circle at top left, #322, #880E4F, #D4167B, #322);
 }
+.flex-lg8 {
+  margin: 0 auto;
+}
+textarea {
+  background-color: #585858;
+  /* background-color: gre; */
+}
 /* h2 {
   font-size: 2em;
 } */

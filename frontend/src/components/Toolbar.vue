@@ -91,7 +91,7 @@ export default {
         position: 'bottom-right',
         closeOnSwipe: true,
         theme: 'bubble',
-        className: 'cyan'
+        className: 'pink darken-4'
       })
 
       this.$store.dispatch('setAdmin', null)

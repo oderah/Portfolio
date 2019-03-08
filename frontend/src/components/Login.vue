@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-container>
-      <v-flex>
-        <Panel _class="pink darken-4">
+      <v-flex lg4 md6 sm6 class="flex-lg8">
+        <Panel _class="pink darken-4" class="grey darken-4">
           <div slot="title">
             <h1>Admin</h1>
           </div>
@@ -11,20 +11,25 @@
               v-model="email"
               label="E-mail"
               required
-              autofocus>
+              solo
+              autofocus dark>
             </v-text-field>
+            <br />
             <v-text-field
               v-model="password"
               type="password"
               label="password"
               required
+              solo
+              dark
               @keyup.enter.native="login">
             </v-text-field>
+            <br />
             <v-btn
               dark
+              round
               class="pink darken-4"
-              @click="login"
-            >
+              @click="login">
               Login
             </v-btn>
           </v-form>
@@ -60,6 +65,14 @@ export default {
         // this.admin['email'] = response.data.email
         // this.admin = response.data
 
+        let toastOptions = {
+          duration: 3000,
+          position: 'bottom-right',
+          closeOnSwipe: true,
+          theme: 'bubble',
+          className: 'pink darken-4'
+        }
+
         if (response.data) {
           let admin = {
             email: response.data.admin.email,
@@ -70,24 +83,12 @@ export default {
           this.$cookie.set('admin', JSON.stringify(admin), {expires: 7})
 
           // show log in success toast
-          this.$toasted.show(`Signed in as ${admin.username} :)`, {
-            duration: 3000,
-            position: 'bottom-right',
-            closeOnSwipe: true,
-            theme: 'bubble',
-            className: 'cyan'
-          })
+          this.$toasted.show(`Signed in as ${admin.username} :)`, toastOptions)
 
           this.$router.push({path: this.from})
         } else {
           // show log in failure toast
-          this.$toasted.show('Invalid Credentials!!', {
-            duration: 3000,
-            position: 'bottom-right',
-            closeOnSwipe: true,
-            theme: 'bubble',
-            className: 'pink darken-4'
-          })
+          this.$toasted.show('Invalid Credentials!!', toastOptions)
         }
       } catch (err) {
         console.log(err)

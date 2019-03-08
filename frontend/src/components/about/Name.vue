@@ -1,5 +1,5 @@
 <template>
-  <v-flex xs12>
+  <v-flex xs12 lg10 class="flex-lg8">
     <!-- <Panel _class="pink-gradient tech"> -->
     <Panel class="header">
       <v-container slot="title" class="name">
@@ -7,9 +7,9 @@
       </v-container>
       <v-container slot="text" v-if="!edit" >
         <v-layout row wrap class="tech-names">
-          <v-flex class="title" v-for="title in profile.titles" :key="title.id">
+          <v-flex xs12 sm2 class="title" v-for="title in profile.titles" :key="title.id">
             <!-- <hr > -->
-            <span>{{title.title}} •</span>
+            <span>{{title.title}}</span>
           </v-flex>
         </v-layout>
       </v-container>

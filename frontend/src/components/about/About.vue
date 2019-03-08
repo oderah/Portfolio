@@ -14,7 +14,7 @@
     <Technologies :profile="profile" @update="reloadProfile"/>
     <br >
     <!-- About -->
-    <v-flex xs12>
+    <v-flex xs12 lg10 class="flex-lg8">
       <Panel>
         <v-container slot="title">
           <h2 class="name">A little about Me</h2>

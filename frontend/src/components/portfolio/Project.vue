@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-flex lg10 class="flex-lg8">
     <v-layout column v-if="this.$store.state.admin && !edit" class="admin-options">
       <!-- edit button -->
       <v-btn
@@ -85,7 +85,7 @@
     <v-container v-if="loaded && edit">
       <br />
       <v-form ref="form">
-        <Panel _class="cyan">
+        <Panel _class="cyan" class="grey darken-4">
           <h1 slot="title" class="name">Project Info</h1>
           <v-layout column slot="text">
             <!-- title -->
@@ -93,24 +93,26 @@
               v-model="changes.title"
               label="Title"
               :rules="[rules.required]"
-              solo
+              solo dark clearable
               autofocus>
             </v-text-field>
             <br />
             <v-layout row>
               <!-- link -->
               <v-text-field
-                solo
+                solo dark
                 v-model="changes._link"
                 label="Live link"
+                clearable
                 :rules="[rules.required]">
               </v-text-field>
               <v-spacer></v-spacer>
               <!-- repo -->
               <v-text-field
-                solo
+                solo dark
                 v-model="changes.repo"
                 label="Link to code"
+                clearable
                 :rules="[rules.required]">
               </v-text-field>
             </v-layout>
@@ -119,7 +121,8 @@
             <v-text-field
               v-model="changes.release_date"
               label="Release date"
-              solo
+              solo dark
+              clearable
               :rules="[rules.required]">
             </v-text-field>
             <br />
@@ -127,7 +130,7 @@
             <v-select
               :items="tags"
               v-model="changes.tag"
-              solo
+              solo dark
               label="Select tag"
               :rules="[rules.required]"
             ></v-select>
@@ -139,7 +142,7 @@
               item-value="id"
               return-object
               v-model="changes.Teches"
-              solo
+              solo dark
               clearable
               multiple
               label="Select techs"
@@ -149,13 +152,14 @@
             <!-- new tech -->
             <v-checkbox label="Add new technologies"
               v-model="checkbox"
+              dark
               value="checked"
             >
             </v-checkbox>
             <v-text-field
               v-model="newTechs"
               hint="Separate technologies by comma ','"
-              solo
+              solo dark clearable
               :rules="[rules.required]"
               v-if="createNewTech">
             </v-text-field>
@@ -166,6 +170,8 @@
               label="Description"
               textarea
               solo
+              dark
+              box
               clearable
               hint="You must double space paragraphs!!"
               :rules="[rules.required]">
@@ -173,7 +179,7 @@
           </v-layout>
         </Panel>
         <br />
-        <Panel _class="pink darken-4">
+        <Panel _class="pink darken-4" class="grey darken-4">
           <h1 slot="title" class="name tech-names">Images</h1>
           <v-layout column slot="text">
             <v-layout row wrap v-if="picsLoaded">
@@ -199,6 +205,7 @@
             <!-- new images -->
             <v-checkbox label="Add new pictures"
               v-model="newImagesCheck"
+              dark
               value="checked"
             >
             </v-checkbox>
@@ -217,6 +224,7 @@
               <v-btn
                 color="blue-grey"
                 class="white--text"
+                round
                 @click="$refs.upload.click()">
                 Upload
                 <v-icon right dark>cloud_upload</v-icon>
@@ -245,7 +253,7 @@
       </v-form>
     </v-container>
     <br />
-  </div>
+  </v-flex>
 </template>
 
 <script>
@@ -491,8 +499,11 @@ export default {
     margin: 0 auto;
   }
   .carousel img {
+    height: auto;
+    max-height: 60vh;
+    width: auto;
     max-width: 100%;
-    max-height: 100%;
+    orientation: from-image;
   }
   .project-title, li {
     text-align: left;

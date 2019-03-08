@@ -117,9 +117,11 @@ export default {
 }
 .profile-pic > img {
   position: absolute;
-  width: 100%;
+  /* width: 100%;
   height: auto;
-  max-height: 100%;
+  max-height: 100%; */
+  width: 100%;
+  height: 100%;
 }
 /* xs */
 @media only screen and (max-width: 600px) {

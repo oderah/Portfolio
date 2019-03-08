@@ -4,68 +4,11 @@
       <!-- Add Project Form -->
       <NewProject v-if="add" />
       <!-- Projects -->
-      <v-flex xs12 sm12 md12 lg12 v-if="!add && projectsLoaded">
-        <v-layout row wrap>
-          <v-flex lg3 md4 sm6 xs12 v-for="(project, index) in projectsToDisplay" :key="project.id" style="padding: 15px;">
-            <Panel @click.native="() => {if (!edit) {goToProject(project.id)}}" class="project-card">
-              <!-- Title -->
-              <span class="name project-title tech-names" slot="title">{{project.title}}</span>
-              <!-- carousel -->
-              <v-carousel slot="media" hide-delimiters hide-controls
-                class="carousel black"
-                :interval="delay(index)"
-                v-if="picturesLoaded"
-                >
-                <v-carousel-item
-                  v-for="(image,i) in project.pictures"
-                  :key="i"
-                  @error="missingImage"
-                >
-                  <img
-                    :id="'p' + project.id + '_' + image.id"
-                    :src="image"
-                    :alt="missingImage"
-                  />
-                </v-carousel-item>
-              </v-carousel>
-              <v-container class="carousel my-loader" slot="media" v-if="!picturesLoaded">
-                <span class="app-loading tech-names">Loading...</span>
-              </v-container>
-              <v-layout column slot="text" style="height: 100px;" class="tech-names">
-                <p style="textAlign: left; overflow: hidden;">{{project.Descriptions[0].description || ''}} Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-              </v-layout>
-              <v-layout row slot="actions">
-                <!-- Info button -->
-                <v-btn
-                dark
-                round>
-                  info
-                </v-btn>
-                <v-spacer />
-                <!-- Tag -->
-                <v-avatar
-                  class="title cyan"
-                  size="30px">
-                  <v-icon dark size="20px">
-                    {{app_tags[project.tag]}}
-                  </v-icon>
-                </v-avatar>
-                <!-- delete -->
-                <v-btn
-                  fab
-                  small
-                  dark
-                  flat
-                  color="red"
-                  @click="deleteProject(project.id)"
-                   v-if="edit">
-                  <v-icon>cancel</v-icon>
-                </v-btn>
-              </v-layout>
-            </Panel>
-          </v-flex>
-        </v-layout>
-      </v-flex>
+      <v-layout row wrap v-if="!add && projectsLoaded">
+        <v-flex lg3 md4 sm6 xs12 v-for="project in projectsToDisplay" :key="project.id" style="padding: 15px;">
+          <ProjectCard :project="project" :edit="() => (edit)" />
+        </v-flex>
+      </v-layout>
       <!-- Project loading -->
       <v-container class="my-loader" v-if="!add && !projectsLoaded">
         <span class="app-loading">Loading...</span>
@@ -155,6 +98,7 @@
 import Panel from '@/components/Panel'
 import ProfileService from '@/services/ProfileService'
 import NewProject from './NewProject'
+import ProjectCard from './ProjectCard'
 
 var _ = require('lodash')
 
@@ -167,12 +111,11 @@ export default {
       add: false,
       tags: [],
       filter: [],
-      projectsLoaded: false,
-      picturesLoaded: false
+      projectsLoaded: false
     }
   },
   components: {
-    NewProject, Panel
+    NewProject, Panel, ProjectCard
   },
   async created () {
     // load projects
@@ -189,23 +132,19 @@ export default {
       this.projects = this.projects.data.projects
       this.projectsLoaded = true // set projectsLoaded
 
-      let count = 0
-      // load pictures
-      this.loadPictures(() => {
-        count++
-        if (count === this.count()) { // all pictures loaded
-          this.picturesLoaded = true // set picturesLoaded
-        }
-      })
+      // let count = 0
+      // // load pictures
+      // this.loadPictures(() => {
+      //   count++
+      //   if (count === this.count()) { // all pictures loaded
+      //     this.picturesLoaded = true // set picturesLoaded
+      //   }
+      // })
     },
     // this function gets the projects from server
     async getProjects () {
       const projects = await ProfileService.getProjects('all')
       return projects
-    },
-    // this function navigates to the project with the specified id
-    goToProject (id) {
-      this.$router.push({path: `/portfolio/${id}`})
     },
     // this function filters the projects based on this.filter
     _filter () {
@@ -237,34 +176,6 @@ export default {
     delay (factor) {
       return (factor + 4) + '000'
     },
-    // this function requests image from backend
-    async processPath (id, callback) {
-      ProfileService.loadImage(id).then(res => {
-        callback(res.data)
-      })
-    },
-    // this function loads all the pictures from the server
-    loadPictures (callback) {
-      this.projects.forEach((project) => {
-        project['pictures'] = [] // add new key 'pictures' of type array to project
-
-        // process each imagePath in project
-        project.ImagePaths.forEach(path => {
-          this.processPath(path.id, (img) => {
-            img = img.data // image as a buffer
-
-            // the next steps convert buffer to image
-            var arrayBufferView = new Uint8Array(img) // convert buffer to Uint8Array
-            var blob = new Blob([arrayBufferView], {type: 'image/jpeg'}) // create blob form Uint8Array
-            var urlCreator = window.URL || window.webkitURL
-            var imageUrl = urlCreator.createObjectURL(blob) // create URL from blob
-
-            project.pictures.push(imageUrl) // add to pictures array in project
-            callback()
-          })
-        })
-      })
-    },
     // this function calculated the total number of imagePaths
     count () {
       let count = 0
@@ -274,17 +185,6 @@ export default {
       })
 
       return count
-    },
-    // this function deletes the project specified by id
-    deleteProject (id) {
-      if (confirm('Are you sure you want to delete this project?')) {
-        this.projectsLoaded = false // set projectsLoaded
-        this.picturesLoaded = false // set picturesLoaded
-        ProfileService.deleteProject(id).then(res => {
-          console.log('res', res)
-          this.reloadProjects()
-        })
-      }
     }
   },
   computed: {
@@ -300,15 +200,9 @@ export default {
       let ans = this._filter()
       return ans
     },
-    app_tags: function () {
-      return this.$store.state.tags
-    },
     projectsToDisplay: function () {
       if (this.sortOrder === 'mostRecent') return this.sortedProjectsDesc
       else return this.sortedProjectsAsc
-    },
-    missingImage: function () {
-      return 'Missing Image'
     }
   }
 }
@@ -316,16 +210,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .carousel {
-    height: 200px;
-    margin: 0;
-  }
-  img {
-    max-width: 100%;
-    min-height: 100%;
-    max-height: 100%;
-    image-orientation: from-image;
-  }
   .control {
     position: fixed;
     top: 30vh;
@@ -339,9 +223,6 @@ export default {
   }
   .my-container {
     padding: 30px;
-  }
-  .project-title {
-    font-size: 2em;
   }
   .round {
     border-radius: 5%;

@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container>
     <v-layout class="jumbotron" row>
       <!-- Left -->
       <v-flex class="left" sm6 md4>

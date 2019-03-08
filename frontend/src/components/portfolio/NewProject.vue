@@ -1,115 +1,127 @@
 <template>
-  <v-flex xs10>
-    <Panel _class="pink darken-4">
-      <h1 slot="title" class="tech-names">Add a New Project</h1>
-      <v-form slot="text" ref="form" enctype="multipart/form-data">
-        <!-- title -->
-        <v-text-field
-          v-model="title"
-          label="Title"
-          solo
-          :rules="[rules.required]"
-          autofocus>
-        </v-text-field>
-        <br />
-        <v-layout row>
-          <!-- link -->
+  <v-container>
+    <v-flex xs12 sm10 class="flex-lg8">
+      <Panel _class="pink darken-4" class="grey darken-4">
+        <h1 slot="title" class="tech-names">Add a New Project</h1>
+        <v-form slot="text" ref="form" enctype="multipart/form-data">
+          <!-- title -->
           <v-text-field
-            solo
-            v-model="link"
-            label="Live link"
-            :rules="[rules.required]">
+            v-model="title"
+            label="Title"
+            solo dark
+            clearable
+            :rules="[rules.required]"
+            autofocus>
           </v-text-field>
-          <v-spacer></v-spacer>
-          <!-- repo -->
-          <v-text-field
-            solo
-            v-model="repo"
-            label="Link to code"
-            :rules="[rules.required]">
-          </v-text-field>
-        </v-layout>
-        <br />
-        <!-- release date -->
-        <v-text-field
-          solo
-          v-model="releaseDate"
-          label="Release Date"
-          :rules="[rules.required]">
-        </v-text-field>
-        <br />
-        <!-- tags -->
-        <v-select
-          :items="tags"
-          v-model="tag"
-          solo
-          label="Select tag"
-          :rules="[rules.required]"
-        ></v-select>
-        <br />
-        <!-- techs -->
-        <v-select
-          :items="allTechs"
-          item-text="tech"
-          return-object
-          v-model="techs"
-          solo
-          clearable
-          multiple
-          label="Select techs"
-          :rules="[rules.required]"
-        ></v-select>
-        <br />
-        <!-- new tech -->
-        <v-checkbox label="Add new technologies"
-          v-model="checkbox"
-          value="checked"
-        >
-        </v-checkbox>
-        <v-text-field
-          v-model="newTechs"
-          hint="Separate technologies by comma ','"
-          solo
-          :rules="[rules.required]"
-          v-if="createNewTech">
-        </v-text-field>
-        <!-- description -->
-        <v-text-field
-          v-model="description"
-          label="Description"
-          textarea
-          clearable
-          hint="You must double space paragraphs!!"
-          :rules="[rules.required]">
-        </v-text-field>
-        <!-- display for selected files -->
-        <v-container>
-          <v-layout row wrap>
-            <v-flex xs6 sm3 md2 lg2 class="thumbnail" v-for="(file, index) in files" :key="index">
-              <img :src="file.url" />
-              <span>{{file.file.name}}</span>
-            </v-flex>
+          <br />
+          <v-layout row>
+            <!-- link -->
+            <v-text-field
+              solo dark
+              v-model="link"
+              label="Live link"
+              clearable
+              :rules="[rules.required]">
+            </v-text-field>
+            <v-spacer></v-spacer>
+            <!-- repo -->
+            <v-text-field
+              solo dark
+              v-model="repo"
+              label="Link to code"
+              clearable
+              :rules="[rules.required]">
+            </v-text-field>
           </v-layout>
-        </v-container>
-        <!-- select files -->
-        <input style="display: none;" type="file" name='pictures' multiple @change="filesChanged" ref="upload" />
-        <v-btn
-          color="blue-grey"
-          class="white--text"
-          @click="$refs.upload.click()">
-          Upload
-          <v-icon right dark>cloud_upload</v-icon>
-        </v-btn>
-        <!-- add -->
-        <v-btn
-          dark
-          class="pink darken-4"
-          @click="addProject">
-          Add
-        </v-btn>
-      </v-form>
-    </Panel>
-  </v-flex>
+          <br />
+          <!-- release date -->
+          <v-text-field
+            solo dark
+            v-model="releaseDate"
+            label="Release Date"
+            clearable
+            :rules="[rules.required]">
+          </v-text-field>
+          <br />
+          <!-- tags -->
+          <v-select
+            :items="tags"
+            v-model="tag"
+            solo dark
+            label="Select tag"
+            :rules="[rules.required]"
+          ></v-select>
+          <br />
+          <!-- techs -->
+          <v-select
+            :items="allTechs"
+            item-text="tech"
+            return-object
+            v-model="techs"
+            solo dark
+            clearable
+            multiple
+            label="Select techs"
+            :rules="[rules.required]"
+          ></v-select>
+          <br />
+          <!-- new tech -->
+          <v-checkbox label="Add new technologies"
+            v-model="checkbox"
+            dark
+            value="checked"
+          >
+          </v-checkbox>
+          <v-text-field
+            v-model="newTechs"
+            hint="Separate technologies by comma ','"
+            solo dark
+            :rules="[rules.required]"
+            v-if="createNewTech">
+          </v-text-field>
+          <!-- description -->
+          <v-text-field
+            v-model="description"
+            label="Description"
+            textarea
+            dark
+            solo
+            box
+            clearable
+            hint="You must double space paragraphs!!"
+            :rules="[rules.required]">
+          </v-text-field>
+          <!-- display for selected files -->
+          <v-container>
+            <v-layout row wrap>
+              <v-flex xs6 sm3 md2 lg2 class="thumbnail" v-for="(file, index) in files" :key="index">
+                <img :src="file.url" />
+                <span>{{file.file.name}}</span>
+              </v-flex>
+            </v-layout>
+          </v-container>
+          <!-- select files -->
+          <input style="display: none;" type="file" name='pictures' multiple @change="filesChanged" ref="upload" />
+          <v-btn
+            round
+            color="blue-grey"
+            class="white--text"
+            @click="$refs.upload.click()">
+            Upload
+            <v-icon right dark>cloud_upload</v-icon>
+          </v-btn>
+          <!-- add -->
+          <v-btn
+            dark
+            round
+            class="pink darken-4"
+            @click="addProject">
+            Add
+          </v-btn>
+        </v-form>
+      </Panel>
+    </v-flex>
+  </v-container>
 </template>
 
 <script>
