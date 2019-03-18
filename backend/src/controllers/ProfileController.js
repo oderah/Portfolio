@@ -130,7 +130,8 @@ async function setAbouts (abouts, profile) {
 
 async function setSocials (socials, profile) {
   await SOCIAL.destroy({where: {}, truncate: true})
-  await socials.forEach(async social => {
+  await socials.forEach(async preSocial => {
+    let social = {name: preSocial.name, social: preSocial.social}
     SOCIAL.findOrCreate({where: social}).spread(async (_social, meta) => {
       await profile.addSocial(_social.id)
     })

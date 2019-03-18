@@ -12,6 +12,7 @@
               label="E-mail"
               required
               solo
+              autocomplete="off"
               autofocus dark>
             </v-text-field>
             <br />
@@ -21,6 +22,7 @@
               label="password"
               required
               solo
+              autocomplete="off"
               dark
               @keyup.enter.native="login">
             </v-text-field>
@@ -60,10 +62,6 @@ export default {
           email: this.email,
           password: this.password
         })
-        console.log('login response', response)
-        // this.admin['username'] = response.data.username
-        // this.admin['email'] = response.data.email
-        // this.admin = response.data
 
         let toastOptions = {
           duration: 3000,
@@ -93,8 +91,6 @@ export default {
       } catch (err) {
         console.log(err)
       }
-
-      console.log(this.$store.state.admin)
     }
   },
   mounted () {

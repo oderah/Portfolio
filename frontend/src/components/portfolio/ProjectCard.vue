@@ -6,6 +6,7 @@
     <v-carousel slot="media" hide-delimiters hide-controls
       class="carousel black"
       v-if="picturesLoaded"
+      :interval="delay(index)"
       >
       <v-carousel-item
         v-for="(image,i) in project.pictures"
@@ -36,22 +37,25 @@
       <!-- Tag -->
       <v-avatar
         class="title cyan"
-        size="30px">
+        size="30px"
+        id="tag">
         <v-icon dark size="20px">
           {{app_tags[project.tag]}}
         </v-icon>
       </v-avatar>
       <!-- delete -->
-      <v-btn
-        fab
-        small
-        dark
-        flat
-        color="red"
-        @click="deleteProject(project.id)"
-         v-if="edit()">
-        <v-icon>cancel</v-icon>
-      </v-btn>
+      <transition name="sort-buttons">
+        <v-btn
+          fab
+          small
+          dark
+          flat
+          color="red"
+          @click="deleteProject(project.id)"
+           v-if="check()">
+          <v-icon>cancel</v-icon>
+        </v-btn>
+      </transition>
     </v-layout>
   </Panel>
 </template>
@@ -67,6 +71,7 @@ export default {
     }
   },
   mounted () {
+    this.factor = this.index
     let count = 0
     // load pictures
     this.loadPictures(() => {
@@ -81,7 +86,8 @@ export default {
   },
   props: {
     project: Object,
-    edit: Function
+    edit: Function,
+    index: Number
   },
   methods: {
     // this function navigates to the project with the specified id
@@ -123,6 +129,26 @@ export default {
           callback()
         })
       })
+    },
+    check () {
+      let tag = document.getElementById('tag')
+      // console.log('tag', tag)
+
+      if (this.edit()) {
+        if (tag) {
+          tag.classList.add('slide-tag')
+        }
+        return true
+      } else {
+        if (tag) {
+          tag.classList.remove('slide-tag')
+        }
+        return false
+      }
+    },
+    // this function calculated the delay based on factor
+    delay () {
+      return (this.index + 4) * 1000
     }
   },
   computed: {
@@ -150,5 +176,25 @@ img {
 }
 .project-title {
   font-size: 2em;
+}
+.sort-buttons-enter-active, .sort-buttons-leave-active {
+  /* transition-duration: 0.5s; */
+  animation: slide-right 0.3s reverse;
+}
+.sort-buttons-enter, .sort-buttons-leave-to {
+  /* transform: translateX(80%); */
+  animation: slide-right 0.3s;
+}
+.slide-tag {
+  transform: translateX(-2%);
+}
+@keyframes slide-right {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(70%);
+    display: none;
+  }
 }
 </style>

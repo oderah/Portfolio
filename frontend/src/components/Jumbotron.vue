@@ -9,7 +9,7 @@
       <v-flex class="padded" sm6 md8>
         <v-container class="right">
           <!-- Recent Projects -->
-          <RecentProjects class="recents" />
+          <RecentProjects ref="recents" class="recents" />
           <v-layout>
             <v-avatar
               class="one drip"
@@ -41,6 +41,9 @@ export default {
   methods: {
     goPortfolio () {
       this.$router.push({path: '/portfolio'})
+    },
+    slideAway () {
+      this.$refs.recents.slideAway()
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <v-flex xs12 lg10 class="flex-lg8">
+  <v-flex>
     <!-- <Panel _class="pink-gradient tech"> -->
     <Panel class="header">
       <v-container slot="title" class="name">
@@ -14,7 +14,10 @@
         </v-layout>
       </v-container>
       <v-container slot="text" v-if="edit">
-        <v-text-field v-model="titles" solo hint="Enter titles"></v-text-field>
+        <transition name="abouts">
+          <v-text-field v-model="titles" solo hint="Enter titles" class="abouts-edit">
+          </v-text-field>
+        </transition>
       </v-container>
       <v-container slot="actions" v-if="this.$store.state.admin">
         <v-layout row class="profile-admin-buttons">

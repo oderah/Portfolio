@@ -3,7 +3,7 @@
   <v-avatar
     size="150px"
     class="black profile-pic"
-    @mouseover="() => {hover(); dimImage()}" @mouseleave="() => {stopHover(); unDimImage()}">
+    @mouseover="mouseover" @mouseleave="mouseleave">
     <img ref="profilePic" :src="profile_pic" alt="Profile picture" v-if="loaded" />
     <div v-if="this.$store.state.admin" v-show="hovering">
       <!-- select file -->
@@ -86,6 +86,20 @@ export default {
     deleteProfilePic () {
       this.profilePic = '' // remove current picture
       this.file = '' // set empty string as new profile picture
+    },
+    // mouseover function
+    mouseover () {
+      this.hover()
+      if (this.$store.state.admin) {
+        this.dimImage()
+      }
+    },
+    // mouseleave function
+    mouseleave () {
+      this.stopHover()
+      if (this.$store.state.admin) {
+        this.unDimImage()
+      }
     }
   },
   computed: {

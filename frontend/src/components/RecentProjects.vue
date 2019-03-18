@@ -5,8 +5,8 @@
         <h1>Recent Projects</h1>
       </v-container>
       <v-layout row wrap fill-height>
-        <v-flex xs12 sm12 md6 lg4 v-for="project in projects" :key="project.title">
-          <v-card class="card project-card" @click.native="goToProject(project.id)">
+        <v-flex xs12 sm12 md6 lg4 v-for="(project, index) in projects" :key="project.title">
+          <v-card :id="`p-${index}`" class="card project-card contacts-edit" @click.native="goToProject(project.id)">
             <v-card-media height="100px">
               <v-container fill-height fluid>
                 <!-- Card Title -->
@@ -61,7 +61,6 @@ export default {
   async mounted () {
     var projects = await this.getProjects()
     this.projects = projects.data.projects
-    console.log(this.projects)
     this.projectsLoaded = true
   },
   methods: {
@@ -72,6 +71,23 @@ export default {
     },
     goToProject (id) {
       this.$router.push({path: `/portfolio/${id}`})
+    },
+    slideAway () {
+      const timeout = (index) => {
+        let factor = 150
+        if (index < this.projects.length) {
+          setTimeout(() => {
+            let card = document.getElementById(`p-${index}`)
+            if (card) {
+              card.classList.remove('contacts-edit')
+              card.classList.add('abouts-edit-reverse')
+            }
+            timeout(++index)
+          }, (factor * index))
+        }
+      }
+
+      timeout(0)
     }
   },
   computed: {

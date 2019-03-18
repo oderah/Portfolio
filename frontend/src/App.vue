@@ -41,6 +41,7 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  background-image: url('https://www.insidescience.org/sites/default/files/5_heic1808a_crop.jpg');
   /* background-image: url('https://images.pexels.com/photos/450035/pexels-photo-450035.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260'); */
   background-repeat: no-repeat;
   background-size: cover;
@@ -153,7 +154,107 @@ textarea {
   background-color: #585858;
   /* background-color: gre; */
 }
-/* h2 {
-  font-size: 2em;
+.abouts-enter-active, .abouts-leave-active {
+  transition-duration: 0.5s ease-out;
+}
+.abouts-enter, .abouts-leave-to {
+  transform: translateX(200%);
+}
+.abouts-edit {
+  animation: slide 0.5s ease-in-out 0s 1;
+}
+.abouts-edit-reverse {
+  animation: slide-out 0.5s;
+}
+.contacts-edit {
+  animation: slide-in 1s;
+}
+.left-slide {
+  animation: left-slide-in 1s;
+}
+.right-slide {
+  animation: right-slide-in 1s;
+}
+.right-slide-reverse {
+  animation: right-slide-out 0.5s;
+}
+.left-slide-reverse {
+  animation: left-slide-out 0.5s;
+}
+@keyframes slide-in {
+  from {
+    transform: translateY(100vh);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes slide-out {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100vh);
+  }
+}
+@keyframes slide {
+  0% {
+    transform: translateX(100%);
+  }
+  30% {
+    transform: translateX(50%);
+  }
+  60% {
+    transform: translateX(0);
+  }
+  80% {
+    transform: translateX(2%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+/* @-webkit-keyframes slide {
+  0% {
+    transform: translateX(100%);
+  }
+  50% {
+    transform: translateX(50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
 } */
+@keyframes right-slide-in {
+  from {
+    transform: translateX(100vw);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes right-slide-out {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100vw);
+  }
+}
+@keyframes left-slide-in {
+  from {
+    transform: translateX(-100vw);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes left-slide-out {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100vw);
+  }
+}
 </style>

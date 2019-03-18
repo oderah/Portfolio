@@ -1,58 +1,63 @@
 <template>
-  <v-container>
-    <br >
-    <!-- Name -->
-    <Name :profile="profile" @update="reloadProfile"/>
-    <br >
-    <!-- Education -->
-    <Education :profile="profile" @update="reloadProfile"/>
-    <br >
-    <!-- Skills -->
-    <Skills :profile="profile" @update="reloadProfile"/>
-    <br >
-    <!-- Technologies -->
-    <Technologies :profile="profile" @update="reloadProfile"/>
-    <br >
-    <!-- About -->
-    <v-flex xs12 lg10 class="flex-lg8">
-      <Panel>
-        <v-container slot="title">
-          <h2 class="name">A little about Me</h2>
-        </v-container>
-        <v-layout column wrap slot="text" v-if="!edit">
-          <v-flex xs10 v-for="about in profile.abouts" :key="about.id">
-            <v-container>
-              <p>{{about.paragraph}} Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            </v-container>
-          </v-flex>
-        </v-layout>
-        <v-container slot="text" v-if="edit">
-          <textarea rows="10" v-model="abouts" class="grey lighten-4">
-          </textarea>
-        </v-container>
-        <v-container slot="actions" v-if="this.$store.state.admin">
-          <v-layout row class="profile-admin-buttons">
-            <!-- Edit button -->
-            <v-btn fab small dark @click="editText" v-if="!edit">
-              <v-icon size="20px">edit</v-icon>
-            </v-btn>
+  <v-container v-if="loaded">
+    <v-container>
+      <br >
+      <!-- Name -->
+      <Name class="left-slide" :profile="profile" @update="reloadProfile" ref="name"/>
+      <br >
+      <!-- Skills -->
+      <Skills class="right-slide" :profile="profile" @update="reloadProfile" ref="skills"/>
+      <br >
+      <!-- Education -->
+      <Education class="left-slide" :profile="profile" @update="reloadProfile" ref="education"/>
+      <br >
+      <!-- Technologies -->
+      <Technologies class="right-slide" :profile="profile" @update="reloadProfile" ref="echnologies"/>
+      <br >
+      <!-- About -->
+      <v-flex>
+        <Panel class="left-slide" ref="abouts">
+          <v-container slot="title">
+            <h2 class="name">A little about Me</h2>
+          </v-container>
+          <v-layout column wrap slot="text" v-if="!edit">
+            <v-flex xs10 v-for="about in profile.abouts" :key="about.id">
+              <v-container>
+                <p>{{about.paragraph}}</p>
+              </v-container>
+            </v-flex>
           </v-layout>
-          <v-layout row class="profile-admin-buttons-edit">
-            <!-- Cancel button -->
-            <v-btn fab small dark color="pink" @click="done" v-if="edit">
-              <v-icon size="20px">cancel</v-icon>
-            </v-btn>
-            <!-- Save button -->
-            <v-btn fab small dark color="cyan" @click="saveText" v-if="edit">
-              <v-icon size="20px">save</v-icon>
-            </v-btn>
-          </v-layout>
-        </v-container>
-      </Panel>
-    </v-flex>
-    <br >
-    <br >
-    <br >
+          <v-container slot="text" v-if="edit">
+            <textarea rows="10" v-model="abouts" class="grey lighten-4 abouts-edit" id="descriptions-input">
+            </textarea>
+          </v-container>
+          <v-container slot="actions" v-if="this.$store.state.admin">
+            <v-layout row class="profile-admin-buttons">
+              <!-- Edit button -->
+              <v-btn fab small dark @click="editText" v-if="!edit">
+                <v-icon size="20px">edit</v-icon>
+              </v-btn>
+            </v-layout>
+            <v-layout row class="profile-admin-buttons-edit">
+              <!-- Cancel button -->
+              <v-btn fab small dark color="pink" @click="done" v-if="edit">
+                <v-icon size="20px">cancel</v-icon>
+              </v-btn>
+              <!-- Save button -->
+              <v-btn fab small dark color="cyan" @click="saveText" v-if="edit">
+                <v-icon size="20px">save</v-icon>
+              </v-btn>
+            </v-layout>
+          </v-container>
+        </Panel>
+      </v-flex>
+      <br >
+      <br >
+      <br >
+    </v-container>
+    <v-container class="my-loader" v-if="!loaded">
+      <span class="app-loading">Loading...</span>
+    </v-container>
   </v-container>
 </template>
 
@@ -68,7 +73,8 @@ export default {
     return {
       profile: {},
       abouts: '',
-      edit: false
+      edit: false,
+      loaded: false
     }
   },
   async mounted () {
@@ -78,13 +84,22 @@ export default {
   components: {
     Panel, Name, Education, Skills, Technologies
   },
+  beforeRouteLeave (to, from, next) {
+    this.$refs.education.slideAway()
+
+    setTimeout(() => {
+      this.transit()
+      setTimeout(() => {
+        next()
+      }, 500)
+    }, 300)
+  },
   methods: {
     async reloadProfile () {
       this.profile = (await this.getProfile()).data.profile
-      console.log('reloadProfile, profile: ', this.profile)
+      this.loaded = true
     },
     async getProfile () {
-      console.log('getProfile')
       const profile = await ProfileService.getProfile()
       return profile
     },
@@ -111,9 +126,34 @@ export default {
       console.log(response)
       this.done()
     },
+    // this function slides the textarea for descriptions away
+    slideDescptionsEditAway () {
+      let textarea = document.getElementById('descriptions-input')
+      if (textarea) {
+        textarea.classList.remove('abouts-edit')
+        textarea.classList.add('right-slide-reverse')
+      }
+    },
     done () {
-      this.abouts = ''
-      this.edit = false
+      this.slideDescptionsEditAway() // slide textarea away
+
+      setTimeout(() => {
+        this.abouts = ''
+        this.edit = false
+      }, 500)
+    },
+    // this function applies the side away animation for all components here
+    transit () {
+      // iterate over this.$refs
+      Object.entries(this.$refs).forEach($ref => {
+        if ($ref[1]._vnode.elm.classList.contains('left-slide')) {
+          $ref[1]._vnode.elm.classList.remove('left-slide')
+          $ref[1]._vnode.elm.classList.add('left-slide-reverse')
+        } else {
+          $ref[1]._vnode.elm.classList.remove('right-slide')
+          $ref[1]._vnode.elm.classList.add('right-slide-reverse')
+        }
+      })
     }
   }
 }

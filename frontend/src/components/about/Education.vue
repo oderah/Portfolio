@@ -1,43 +1,48 @@
 <template>
-  <v-flex xs12 lg10 class="flex-lg8">
-    <Panel class="education">
+  <v-flex>
+    <Panel class="education" id="education">
       <v-container slot="title">
         <h2 class="name">Education</h2>
       </v-container>
       <v-container slot="text" v-if="!edit">
         <v-layout row wrap>
           <v-flex lg3 md4 sm6 xs12 v-for="ed in profile.programs" :key="ed.id">
-            <v-container class="ed-container">
+            <v-container class="ed-container" :id="'ed-' + ed.id">
               <v-card class="_card">
+                <!-- institution -->
                 <v-card-media class="cyan darken-2">
                   <v-card-title>
                     <v-container class="ed">{{ed.institution}}</v-container>
                   </v-card-title>
                 </v-card-media>
+                <!-- title and Credentials -->
                 <v-card-text class="text">
-                  <h3>{{ed.title}}</h3>
-                  <p>{{ed.credential}}</p>
-                </v-card-text>
-                <v-card-actions>
+                  <h3>{{ed.title}} - {{ed.credential}}</h3>
+                  <hr />
+                  <!-- <p>{{ed.credential}}</p> -->
                   <p>from: {{customizeDate(ed.start).month}}, {{customizeDate(ed.start).year}}</p>
                   <v-spacer />
                   <p>to: {{customizeDate(ed.end).month}}, {{customizeDate(ed.end).year}}</p>
-                </v-card-actions>
+                </v-card-text>
               </v-card>
             </v-container>
           </v-flex>
         </v-layout>
       </v-container>
       <v-container slot="text" v-if="edit">
+        <!-- <transition name="school-forms">
+
+        </transition> -->
         <v-container fluid>
           <v-layout row wrap>
-            <v-flex xs12 v-for="program in programs" :key="program.id">
-              <v-form class="white">
+            <v-flex xs12 v-for="(program, index) in programs" :key="program.id">
+              <v-form class="grey darken-4 contacts-edit" :id="`pr-${program.institution}-${program.id || program.eId}`">
                 <v-layout column>
                   <v-text-field
                     label="Insitution Name"
                     v-model="program.institution"
                     required
+                    dark
                     solo>
                   </v-text-field>
                   <br />
@@ -45,6 +50,7 @@
                     label="Title"
                     v-model="program.title"
                     required
+                    dark
                     solo>
                   </v-text-field>
                   <br />
@@ -52,6 +58,7 @@
                     label="Credentials"
                     v-model="program.credential"
                     required
+                    dark
                     solo>
                   </v-text-field>
                   <br />
@@ -60,6 +67,7 @@
                     v-model="program.start"
                     hint="(yyyy/mm/dd)"
                     required
+                    dark
                     solo>
                   </v-text-field>
                   <br />
@@ -68,10 +76,12 @@
                     v-model="program.end"
                     hint="(yyyy/mm/dd)"
                     required
+                    dark
                     solo>
                   </v-text-field>
+                  <!-- delete -->
                   <v-flex style="paddingTop: 10px;">
-                    <v-btn fab small dark color="pink" @click="removeProgram(program)">
+                    <v-btn fab small dark color="pink" @click="removeProgram(program, index)">
                       <v-icon size="20px">cancel</v-icon>
                     </v-btn>
                   </v-flex>
@@ -116,7 +126,8 @@ export default {
   data () {
     return {
       programs: [],
-      edit: false
+      edit: false,
+      countBlanks: 0
     }
   },
   components: {
@@ -125,9 +136,13 @@ export default {
   props: {
     profile: Object
   },
+  created () {
+    this.slideIn()
+  },
   methods: {
     addProgramForm () {
-      this.programs.push({institution: '', title: '', credential: '', start: '', end: ''})
+      this.programs.push({institution: '', title: '', credential: '', start: '', end: '', eId: this.countBlanks})
+      this.countBlanks++
     },
     editPrograms () {
       this.profile.programs.forEach(program => {
@@ -152,16 +167,82 @@ export default {
       this.done()
     },
     done () {
-      this.programs = []
-      this.edit = false
+      this.slideFormsAway() // slide forms away
+
+      setTimeout(() => {
+        this.programs = []
+        this.edit = false
+        document.getElementById('education').scrollIntoView()
+      }, 200)
     },
-    removeProgram (program) {
-      let tmp = _.remove(this.programs, {id: program.id})
-      if (tmp.length === 0) {
-        _.remove(this.programs, {institution: program.institution, title: program.title})
+    // this function slides forms away
+    slideFormsAway () {
+      const timeout = (index) => {
+        if (index >= 0) {
+          let factor = 150
+          setTimeout(() => {
+            let p = this.programs[index]
+            let elm = document.getElementById(`pr-${p.institution}-${p.id}`)
+            if (elm) {
+              elm.classList.remove('contacts-edit')
+              elm.classList.add('abouts-edit-reverse')
+            }
+            timeout(--index)
+          }, (factor * ((index + 1) % this.programs.length)))
+        }
       }
-      this.edit = false
-      this.edit = true
+
+      timeout(this.programs.length - 1)
+    },
+    // this function applies delete animation to blank forms
+    deleteBlanks () {
+      console.log('deleteBlanks')
+      const timeout = (index) => {
+        let factor = 50
+        if (index >= 0) {
+          let ed = this.programs[index]
+          if (ed.institution === '') {
+            console.log('ed', ed)
+            setTimeout(() => {
+              let elm = document.getElementById(`pr-${ed.institution}-${ed.eId}`)
+              if (elm) {
+                elm.classList.remove('contacts-edit')
+                elm.classList.add('abouts-edit-reverse')
+              }
+              timeout(--index)
+            }, (factor * index))
+          } else {
+            timeout(--index)
+          }
+        }
+      }
+
+      timeout(this.programs.length - 1)
+    },
+    removeProgram (program, index) {
+      // animation
+      if (program.title === '') {
+        this.deleteBlanks()
+      } else {
+        let lar = document.getElementById(`pr-${program.Insitution}-${program.id}`)
+        if (lar) {
+          lar.classList.remove('contacts-edit')
+          lar.classList.add('abouts-edit-reverse')
+        }
+      }
+
+      setTimeout(() => {
+        let tmp = _.remove(this.programs, {id: program.id})
+        if (tmp.length === 0) {
+          _.remove(this.programs, {institution: program.institution, title: program.title})
+        }
+
+        this.edit = false
+        this.edit = true
+        this.countBlanks = 0
+
+        document.getElementById('education').scrollIntoView()
+      }, 600)
     },
     customizeDate (date) {
       let year = date.substring(0, 4)
@@ -206,6 +287,48 @@ export default {
         default:
       }
       return {year: year, month: month}
+    },
+    slideProgramsAway () {
+      const timeout = (index) => {
+        let factor = 150
+        if (index >= 0) {
+          setTimeout(() => {
+            let ed = this.profile.programs[index]
+            let elm = document.getElementById(`ed-${ed.id}`)
+            if (elm) {
+              elm.classList.remove('contacts-edit')
+              elm.classList.add('abouts-edit-reverse')
+            }
+            timeout(--index)
+          }, (factor * ((index + 1) % this.profile.programs.length)))
+        }
+      }
+
+      timeout(this.profile.programs.length - 1)
+    },
+    slideAway () {
+      if (this.edit) {
+        this.slideFormsAway()
+      } else {
+        this.slideProgramsAway()
+      }
+    },
+    slideIn () {
+      const timeout = (index) => {
+        let factor = 150
+        if (index < this.profile.programs.length) {
+          setTimeout(() => {
+            let ed = this.profile.programs[index]
+            let elm = document.getElementById(`ed-${ed.id}`)
+            if (elm) {
+              elm.classList.add('contacts-edit')
+            }
+            timeout(++index)
+          }, (factor * index))
+        }
+      }
+
+      timeout(0)
     }
   }
 }
@@ -235,5 +358,11 @@ export default {
   }
   .education {
     background: radial-gradient(circle at top left, #006064, #0097A7, cyan, #0097A7, #90A4AE);
+  }
+  .school-forms-leave-active {
+    transition-duration: 0.5s;
+  }
+  .school-forms-leave-to {
+    transform: translateX(200%);
   }
 </style>

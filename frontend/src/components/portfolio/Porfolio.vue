@@ -2,11 +2,11 @@
   <div class="my-container">
     <v-layout column>
       <!-- Add Project Form -->
-      <NewProject v-if="add" />
+      <NewProject v-if="add" class="left-slide" id="newProject" />
       <!-- Projects -->
       <v-layout row wrap v-if="!add && projectsLoaded">
-        <v-flex lg3 md4 sm6 xs12 v-for="project in projectsToDisplay" :key="project.id" style="padding: 15px;">
-          <ProjectCard :project="project" :edit="() => (edit)" />
+        <v-flex lg3 md4 sm6 xs12 v-for="(project, index) in projectsToDisplay" :key="project.id" style="padding: 15px;">
+          <ProjectCard :project="project" :edit="() => (edit)" :index="index" class="contacts-edit" :id="`p-${project.id}`" />
         </v-flex>
       </v-layout>
       <!-- Project loading -->
@@ -14,22 +14,39 @@
         <span class="app-loading">Loading...</span>
       </v-container>
       <!-- Control Panel -->
-      <v-flex class="control">
+      <v-flex class="control control-panel-slide-in" id="control-panel">
         <v-container>
           <Panel class="education round">
             <!-- sorting -->
             <v-layout column slot="text">
-              <v-layout column>
-                <div>Sort Order:</div>
-                <v-flex offset-xs1>
-                  <v-radio-group v-model="sortOrder" :mandatory="true">
-                    <v-radio label="New to Old" value="mostRecent" color="black"></v-radio>
-                    <v-radio label="Old to New" value="leastRecent" color="black"></v-radio>
-                  </v-radio-group>
-                </v-flex>
-              </v-layout>
+              <v-menu dark top open-on-hover fixed offset-y :close-on-content-click="false">
+                <v-btn dark round slot="activator" class="pink darken-4">
+                  Order By
+                </v-btn>
+                <v-list class="pink darken-4" style="width: 200px;">
+                  <v-list-tile v-for="(choice, index) in orderByChoices" :key="index">
+                    <v-list-tile-title>
+                      <v-layout row >
+                        <v-checkbox
+                          v-model="orderBy"
+                          :label="choice.text"
+                          :value="choice.value"
+                          return-object
+                          color="white">
+                        </v-checkbox>
+                        <transition name="sort-buttons">
+                          <div v-show="orderBy === choice.value">
+                            <v-icon :color="arrowColor(choice, 'up')" @click="sortOrder = 'leastRecent'">arrow_upward</v-icon>
+                            <v-icon :color="arrowColor(choice, 'down')" @click="sortOrder = 'mostRecent'">arrow_downward</v-icon>
+                          </div>
+                        </transition>
+                      </v-layout>
+                    </v-list-tile-title>
+                  </v-list-tile>
+                </v-list>
+              </v-menu>
               <!-- filter -->
-              <v-menu dark fixed offset-y :close-on-content-click="false">
+              <v-menu dark fixed open-on-hover offset-y :close-on-content-click="false">
                 <v-btn dark round slot="activator" class="pink darken-4">
                   filter
                 </v-btn>
@@ -64,7 +81,7 @@
                   small
                   dark
                   color="pink"
-                  @click="() => {edit = false; add = false}">
+                  @click="cancel">
                   <v-icon>cancel</v-icon>
                 </v-btn>
                 <!-- add -->
@@ -72,7 +89,7 @@
                   fab
                   small
                   dark
-                  @click="() => {add = true}">
+                  @click="addProject">
                   <v-icon>add</v-icon>
                 </v-btn>
                 <!-- save -->
@@ -106,6 +123,12 @@ export default {
   data () {
     return {
       projects: [],
+      orderBy: 'release_date',
+      orderByChoices: [
+        {text: 'Title', value: 'title', sortOrder: 'leastRecent'},
+        {text: 'Date', value: 'release_date', sortOrder: 'leastRecent'},
+        {text: 'Tag', value: 'tag', sortOrder: 'leastRecent'}
+      ],
       sortOrder: 'mostRecent',
       edit: false,
       add: false,
@@ -125,21 +148,18 @@ export default {
     this.filter = this.tags // filter projects
     window.scrollTo(0, 0) // scroll to top
   },
+  beforeRouteLeave (to, from, next) {
+    this.transit()
+    setTimeout(() => {
+      next()
+    }, 500)
+  },
   methods: {
     // this function reloads the projects
     async reloadProjects () {
       this.projects = await this.getProjects()
       this.projects = this.projects.data.projects
       this.projectsLoaded = true // set projectsLoaded
-
-      // let count = 0
-      // // load pictures
-      // this.loadPictures(() => {
-      //   count++
-      //   if (count === this.count()) { // all pictures loaded
-      //     this.picturesLoaded = true // set picturesLoaded
-      //   }
-      // })
     },
     // this function gets the projects from server
     async getProjects () {
@@ -149,7 +169,6 @@ export default {
     // this function filters the projects based on this.filter
     _filter () {
       let filtered = []
-      // this.$root.$emit('filter')
 
       this.filter.forEach(option => {
         let projs = this.projects.slice() // get a copy of this.projects
@@ -185,15 +204,79 @@ export default {
       })
 
       return count
+    },
+    arrowColor (choice, type) {
+      if (type === 'down') {
+        return (this.sortOrder === 'mostRecent') ? 'cyan' : 'white'
+      } else {
+        return (this.sortOrder === 'mostRecent') ? 'white' : 'cyan'
+      }
+    },
+    up (choice) {
+      choice.sortOrder = 'leastRecent'
+    },
+    down (choice) {
+      choice.sortOrder = 'mostRecent'
+    },
+    // this function applies the side away animation for all components here
+    transit () {
+      // slide control panel away
+      let controlPanel = document.getElementById('control-panel')
+      if (controlPanel) {
+        controlPanel.classList.remove('control-panel-slide-in')
+        controlPanel.classList.add('control-panel-slide-out')
+      }
+
+      if (this.add) {
+        this.slideEditPanel() // slide edit panel if in add project mode
+      } else {
+        this.slideProjects() // slide projects if not in add project mode
+      }
+    },
+    slideProjects () {
+      this.projects.forEach(project => {
+        let pcard = document.getElementById(`p-${project.id}`)
+        if (pcard) {
+          pcard.classList.remove('contacts-edit')
+          pcard.classList.add('abouts-edit-reverse')
+        }
+      })
+    },
+    slideEditPanel () {
+      let form = document.getElementById('newProject')
+      if (form) {
+        form.classList.remove('left-slide')
+        form.classList.add('left-slide-reverse')
+      }
+    },
+    slideNewPictures () {
+
+    },
+    // this function exits edit mode
+    cancel () {
+      this.slideEditPanel() // slide edit panel away
+
+      setTimeout(() => {
+        this.edit = false
+        this.add = false
+      }, 500)
+    },
+    // this function starts the add project process
+    addProject () {
+      this.slideProjects() // slide projects away
+
+      setTimeout(() => {
+        this.add = true
+      }, 300)
     }
   },
   computed: {
     sortedProjectsAsc: function () {
-      let temp = _.orderBy(this.filteredProjects, 'release_date', 'asc')
+      let temp = _.orderBy(this.filteredProjects, this.orderBy, 'asc')
       return temp
     },
     sortedProjectsDesc: function () {
-      let temp = _.orderBy(this.filteredProjects, 'release_date', 'desc')
+      let temp = _.orderBy(this.filteredProjects, this.orderBy, 'desc')
       return temp
     },
     filteredProjects: function () {
@@ -221,10 +304,47 @@ export default {
     transform: translateX(-140px);
     transition-duration: 0.3s;
   }
+  .control-panel-slide-in {
+    animation: control-slide 1s;
+  }
+  .control-panel-slide-out {
+    animation: control-slide-out 0.7s;
+  }
   .my-container {
     padding: 30px;
   }
   .round {
     border-radius: 5%;
+  }
+  .sort-buttons-enter-active, .sort-buttons-leave-active {
+    transition-duration: 0.5s;
+  }
+  .sort-buttons-enter {
+    transform: translateX(100%);
+  }
+  .sort-buttons-leave-to {
+    transform: translateX(100%);
+  }
+  @keyframes control-slide {
+    0% {
+      transform: translateX(100vw);
+    }
+    50% {
+      transform: translateX(-5vw);
+    }
+    100% {
+      transform: translateX(0px);
+    }
+  }
+  @keyframes control-slide-out {
+    0% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-5vw);
+    }
+    100% {
+      transform: translateX(100vw);
+    }
   }
 </style>
