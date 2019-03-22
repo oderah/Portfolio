@@ -144,8 +144,8 @@
         </v-container>
       </Panel>
     </v-flex>
-    <v-container class="my-loader" v-if="!loaded">
-      <span class="app-loading">Loading...</span>
+    <v-container class="loader" slot="media" v-if="!loaded">
+      <img src="@/assets/loader.svg" alt="Loading icon." />
     </v-container>
     <br />
     <br />

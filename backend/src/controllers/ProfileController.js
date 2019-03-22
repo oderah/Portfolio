@@ -239,7 +239,8 @@ async function addProject (req, res) {
       _link: req.body._link,
       repo: req.body.repo,
       tag: req.body.tag,
-      release_date: req.body.releaseDate
+      release_date: req.body.releaseDate,
+      ProfileId: 1
     }).then(async (project) => {
       // add descriptions
       JSON.parse(req.body.descriptions).forEach(description => {

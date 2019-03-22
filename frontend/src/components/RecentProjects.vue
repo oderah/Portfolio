@@ -42,8 +42,8 @@
       </v-layout>
     </v-container>
     <!-- Project loading -->
-    <v-container class="my-loader" v-if="!projectsLoaded">
-      <span class="app-loading">Loading...</span>
+    <v-container class="loader" slot="media" v-if="!projectsLoaded">
+      <img src="@/assets/loader.svg" alt="Loading icon." />
     </v-container>
   </div>
 </template>
@@ -73,21 +73,23 @@ export default {
       this.$router.push({path: `/portfolio/${id}`})
     },
     slideAway () {
-      const timeout = (index) => {
-        let factor = 150
-        if (index < this.projects.length) {
-          setTimeout(() => {
-            let card = document.getElementById(`p-${index}`)
-            if (card) {
-              card.classList.remove('contacts-edit')
-              card.classList.add('abouts-edit-reverse')
-            }
-            timeout(++index)
-          }, (factor * index))
+      if (this.projects) {
+        const timeout = (index) => {
+          let factor = 150
+          if (index < this.projects.length) {
+            setTimeout(() => {
+              let card = document.getElementById(`p-${index}`)
+              if (card) {
+                card.classList.remove('contacts-edit')
+                card.classList.add('abouts-edit-reverse')
+              }
+              timeout(++index)
+            }, (factor * index))
+          }
         }
-      }
 
-      timeout(0)
+        timeout(0)
+      }
     }
   },
   computed: {

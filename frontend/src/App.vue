@@ -41,14 +41,11 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-  background-image: url('https://www.insidescience.org/sites/default/files/5_heic1808a_crop.jpg');
+  /* background-image: url('https://www.insidescience.org/sites/default/files/5_heic1808a_crop.jpg'); */
   /* background-image: url('https://images.pexels.com/photos/450035/pexels-photo-450035.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260'); */
+  background-image: url('./assets/background.svg');
   background-repeat: no-repeat;
   background-size: cover;
-  /* background: radial-gradient(circle at top left, #263238, #607D8B, #ECEFF1, #90A4AE, #607D8B) */
-  /* background: radial-gradient(ellipse at top left, grey,  #880E4F, #D45699); */
-  /* background: radial-gradient(circle at top left,#000, #006064, #0097A7, cyan, #0097A7, #90A4AE, #000); */
-  /* background: linear-gradient(to bottom, #222, #393C40, #72797F, #393C40, #222); */
 }
 h1 {
   /* color: #CFD8DC; */
@@ -72,17 +69,6 @@ textarea {
 .tech-names {
   color: #CFD8DC;
 }
-/* .cancel, .save, .add {
-  position: absolute;
-}
-.cancel {
-  bottom: 10px;
-  left: 90%;
-}
-.save {
-  bottom: 10px;
-  left: 95%;
-} */
 .profile-admin-buttons {
   position: relative;
   bottom: 0;
@@ -104,18 +90,13 @@ p, h2 {
 p {
   font-size: 1.2em;
 }
-/* .loading {
-  position: absolute;
-  top: 40vh;
-  left: 45vw;
-} */
-.app-loading {
+/* .app-loading {
   font-weight: bold;
   animation-name: loading;
   animation-duration: 1s;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
-}
+} */
 @keyframes loading {
   0% {transform: translateY(0px);}
   25% {transform: translateY(5px);}
@@ -123,11 +104,11 @@ p {
   75% {transform: translateY(-10px);}
   100% {transform: translateY(-5px);}
 }
-.my-loader {
+/* .my-loader {
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
+} */
 .thumbnail {
   width: 100px;
   height: 100px;
@@ -181,6 +162,10 @@ textarea {
 .left-slide-reverse {
   animation: left-slide-out 0.5s;
 }
+.loader {
+  height: 70pt;
+  width: 70pt;
+}
 @keyframes slide-in {
   from {
     transform: translateY(100vh);
@@ -214,17 +199,6 @@ textarea {
     transform: translateX(0);
   }
 }
-/* @-webkit-keyframes slide {
-  0% {
-    transform: translateX(100%);
-  }
-  50% {
-    transform: translateX(50%);
-  }
-  100% {
-    transform: translateX(0%);
-  }
-} */
 @keyframes right-slide-in {
   from {
     transform: translateX(100vw);

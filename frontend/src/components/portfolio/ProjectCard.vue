@@ -20,8 +20,8 @@
         />
       </v-carousel-item>
     </v-carousel>
-    <v-container class="carousel my-loader" slot="media" v-if="!picturesLoaded">
-      <span class="app-loading tech-names">Loading...</span>
+    <v-container class="loader" slot="media" v-if="!picturesLoaded">
+      <img src="@/assets/loader.svg" alt="Loading icon." />
     </v-container>
     <v-layout column slot="text" style="height: 100px;" class="tech-names">
       <p style="textAlign: left; overflow: hidden;">{{project.Descriptions[0].description || ''}}</p>
@@ -87,7 +87,9 @@ export default {
   props: {
     project: Object,
     edit: Function,
-    index: Number
+    index: Number,
+    reloadProjects: Function,
+    slideProject: Function
   },
   methods: {
     // this function navigates to the project with the specified id
@@ -100,7 +102,11 @@ export default {
         this.projectsLoaded = false // set projectsLoaded
         this.picturesLoaded = false // set picturesLoaded
         ProfileService.deleteProject(id).then(res => {
-          this.reloadProjects()
+          this.slideProject(this.project.id)
+
+          setTimeout(() => {
+            this.reloadProjects()
+          }, 300)
         })
       }
     },

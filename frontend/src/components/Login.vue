@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container>
+    <v-container class="contacts-edit" id="container">
       <v-flex lg4 md6 sm6 class="flex-lg8">
         <Panel _class="pink darken-4" class="grey darken-4">
           <div slot="title">
@@ -54,6 +54,18 @@ export default {
   },
   components: {
     Panel
+  },
+  beforeRouteLeave (to, from, next) {
+    let container = document.getElementById('container')
+
+    if (container) {
+      container.classList.remove('contacts-edit')
+      container.classList.add('abouts-edit-reverse')
+    }
+
+    setTimeout(() => {
+      next()
+    }, 500)
   },
   methods: {
     async login () {

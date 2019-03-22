@@ -66,5 +66,5 @@ typings/
 *.png
 *.gif
 
-text files
+#text files
 *.txt

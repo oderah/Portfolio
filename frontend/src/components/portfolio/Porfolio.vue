@@ -6,12 +6,12 @@
       <!-- Projects -->
       <v-layout row wrap v-if="!add && projectsLoaded">
         <v-flex lg3 md4 sm6 xs12 v-for="(project, index) in projectsToDisplay" :key="project.id" style="padding: 15px;">
-          <ProjectCard :project="project" :edit="() => (edit)" :index="index" class="contacts-edit" :id="`p-${project.id}`" />
+          <ProjectCard :project="project" :edit="() => (edit)" :index="index" class="contacts-edit" :id="`p-${project.id}`" :reloadProjects="reloadProjects" :slideProject="slideProject" />
         </v-flex>
       </v-layout>
       <!-- Project loading -->
-      <v-container class="my-loader" v-if="!add && !projectsLoaded">
-        <span class="app-loading">Loading...</span>
+      <v-container class="loader" slot="media" v-if="!projectsLoaded">
+        <img src="@/assets/loader.svg" alt="Loading icon." />
       </v-container>
       <!-- Control Panel -->
       <v-flex class="control control-panel-slide-in" id="control-panel">
@@ -46,7 +46,7 @@
                 </v-list>
               </v-menu>
               <!-- filter -->
-              <v-menu dark fixed open-on-hover offset-y :close-on-content-click="false">
+              <v-menu dark fixed offset-y :close-on-content-click="false">
                 <v-btn dark round slot="activator" class="pink darken-4">
                   filter
                 </v-btn>
@@ -233,6 +233,15 @@ export default {
         this.slideProjects() // slide projects if not in add project mode
       }
     },
+    slideProject (id) {
+      this.projects.forEach(project => {
+        let pcard = document.getElementById(`p-${id}`)
+        if (pcard) {
+          pcard.classList.remove('contacts-edit')
+          pcard.classList.add('abouts-edit-reverse')
+        }
+      })
+    },
     slideProjects () {
       this.projects.forEach(project => {
         let pcard = document.getElementById(`p-${project.id}`)
@@ -248,9 +257,6 @@ export default {
         form.classList.remove('left-slide')
         form.classList.add('left-slide-reverse')
       }
-    },
-    slideNewPictures () {
-
     },
     // this function exits edit mode
     cancel () {

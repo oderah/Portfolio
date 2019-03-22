@@ -79,6 +79,7 @@
             :rules="[rules.required]"
             v-if="createNewTech">
           </v-text-field>
+          <br />
           <!-- description -->
           <v-text-field
             v-model="description"
@@ -94,9 +95,8 @@
           <!-- display for selected files -->
           <v-container>
             <v-layout row wrap>
-              <v-flex xs6 sm3 md2 lg2 class="thumbnail" v-for="(file, index) in files" :key="index">
+              <v-flex xs6 sm3 md2 lg2 class="thumbnail contacts-edit" v-for="(file, index) in files" :key="index">
                 <img :src="file.url" />
-                <span>{{file.file.name}}</span>
               </v-flex>
             </v-layout>
           </v-container>

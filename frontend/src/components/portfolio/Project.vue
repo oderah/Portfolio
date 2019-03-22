@@ -20,7 +20,7 @@
         <v-icon>delete</v-icon>
       </v-btn>
     </v-layout>
-    <Panel>
+    <Panel class="long">
       <div slot="text">
         <v-container v-if="loaded && !edit">
           <div class="name">
@@ -74,14 +74,14 @@
               </v-carousel>
             </v-layout>
           </Panel>
-          <v-container class="my-loader" v-if="!picsLoaded">
-            <span class="app-loading">Loading...</span>
+          <v-container class="loader" slot="media" v-if="!picsLoaded">
+            <img src="@/assets/loader.svg" alt="Loading icon." />
           </v-container>
           <br />
           <br />
         </v-container>
-        <v-container class="my-loader" v-if="!loaded && !edit">
-          <span>Loading...</span>
+        <v-container class="loader" slot="media" v-if="!loaded && !edit">
+          <img src="@/assets/loader.svg" alt="Loading icon." />
         </v-container>
         <!-- Edit -->
         <v-container v-if="loaded && edit">
@@ -95,17 +95,16 @@
                   v-model="changes.title"
                   label="Title"
                   :rules="[rules.required]"
-                  solo dark clearable
+                  solo dark clearable class="text-field"
                   autofocus>
                 </v-text-field>
-                <br />
                 <v-layout row>
                   <!-- link -->
                   <v-text-field
                     solo dark
                     v-model="changes._link"
                     label="Live link"
-                    clearable
+                    clearable class="text-field"
                     :rules="[rules.required]">
                   </v-text-field>
                   <v-spacer></v-spacer>
@@ -114,29 +113,27 @@
                     solo dark
                     v-model="changes.repo"
                     label="Link to code"
-                    clearable
+                    clearable class="text-field"
                     :rules="[rules.required]">
                   </v-text-field>
                 </v-layout>
-                <br />
                 <!-- release date -->
                 <v-text-field
                   v-model="changes.release_date"
                   label="Release date"
                   solo dark
-                  clearable
+                  clearable class="text-field"
                   :rules="[rules.required]">
                 </v-text-field>
-                <br />
                 <!-- tags -->
                 <v-select
                   :items="tags"
                   v-model="changes.tag"
                   solo dark
                   label="Select tag"
+                  class="text-field"
                   :rules="[rules.required]"
                 ></v-select>
-                <br />
                 <!-- techs -->
                 <v-select
                   :items="allTechs"
@@ -145,12 +142,11 @@
                   return-object
                   v-model="changes.Teches"
                   solo dark
-                  clearable
+                  clearable class="text-field"
                   multiple
                   label="Select techs"
                   :rules="[rules.techs]"
                 ></v-select>
-                <br />
                 <!-- new tech -->
                 <v-checkbox label="Add new technologies"
                   v-model="checkbox"
@@ -161,11 +157,10 @@
                 <v-text-field
                   v-model="newTechs"
                   hint="Separate technologies by comma ','"
-                  solo dark clearable
+                  solo dark clearable class="text-field"
                   :rules="[rules.required]"
                   v-if="createNewTech">
                 </v-text-field>
-                <br />
                 <!-- description -->
                 <v-text-field
                   v-model="changes.description"
@@ -174,7 +169,7 @@
                   solo
                   dark
                   box
-                  clearable
+                  clearable class="text-field"
                   hint="You must double space paragraphs!!"
                   :rules="[rules.required]">
                 </v-text-field>
@@ -200,8 +195,8 @@
                     </v-btn>
                   </v-flex>
                 </v-layout>
-                <v-container class="my-loader" v-if="!picsLoaded">
-                  <span class="app-loading">Loading...</span>
+                <v-container class="loader" slot="media" v-if="!picsLoaded">
+                  <img src="@/assets/loader.svg" alt="Loading icon." />
                 </v-container>
                 <br />
                 <!-- new images -->
@@ -217,7 +212,7 @@
                   <!-- display for selected files -->
                   <v-container>
                     <v-layout row wrap>
-                      <v-flex xs6 sm3 md2 lg2 class="thumbnail" v-for="(file, index) in files" :key="index">
+                      <v-flex xs6 sm3 md2 lg2 class="thumbnail contacts-edit" v-for="(file, index) in files" :key="index">
                         <img :src="file.url" />
                       </v-flex>
                     </v-layout>
@@ -551,6 +546,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  .long {
+    min-height: 100vh !important;
+  }
   .admin-options {
     position: fixed;
     bottom: 5vh;
@@ -589,5 +587,8 @@ export default {
     position: relative;
     top: -120%;
     right: -40%;
+  }
+  .text-field {
+    margin: 5px 0;
   }
 </style>
