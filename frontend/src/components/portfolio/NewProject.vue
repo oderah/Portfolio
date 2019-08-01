@@ -145,6 +145,13 @@ export default {
       createNewTech: false,
       rules: {
         required: value => !!value || 'Required'
+      },
+      toastOptions: {
+        duration: 3000,
+        position: 'bottom-right',
+        closeOnSwipe: true,
+        theme: 'bubble',
+        className: 'pink darken-4'
       }
     }
   },
@@ -166,40 +173,73 @@ export default {
     },
     // this function adds the new project
     async addProject () {
-      if (this.$refs.form.validate()) { // validate form
-        // split description into array
-        const projDescriptions = this.description.trim().split('\n\n')
-        let descriptions = []
+      console.log('FILE 1 =>', this.files[0].file)
 
-        projDescriptions.forEach(desc => {
-          descriptions.push(desc)
+      if (this.$refs.form.validate()) { // validate form
+        let imagePaths = []
+        let promises = []
+
+        // show uploading images toast
+        this.$toasted.show(`Uploading images...`, this.toastOptions)
+
+        this.files.forEach(file => {
+          promises.push(
+            new Promise((resolve, reject) => {
+              ProfileService.getSignedRequest(encodeURIComponent(file.file.name), file.file.type).then(res => {
+                ProfileService.uploadFileToBucket(file.file, res.data.signedRequest, res.data.url).then(url => {
+                  resolve(url)
+                }).catch(err => {
+                  reject(err)
+                })
+              }).catch(err => {
+                reject(err)
+              })
+            })
+          )
         })
 
-        // create new formdata
-        let data = new FormData()
-        data.append('title', this.title)
-        data.append('_link', this.link)
-        data.append('repo', this.repo)
-        data.append('tag', this.tag)
-        data.append('releaseDate', this.releaseDate)
-        data.append('descriptions', JSON.stringify(descriptions))
-        data.append('techs', JSON.stringify(this.techs))
-        data.append('newTechs', this.newTechs)
+        Promise.all(promises).then(urls => {
+          imagePaths = urls
 
-        // append pictured to formdata
-        for (var i = 0; i < this.files.length; i++) {
-          let file = this.files[i]
-          data.append('pictures', file.file)
-        }
+          // split description into array
+          const projDescriptions = this.description.trim().split('\n\n')
+          let descriptions = []
 
-        // submit formdata to server
-        ProfileService.addProject(data).then((res) => {
-          // on success reroute to project view
-          this.$router.push({path: `/portfolio/${res.data.id}`})
-        }).catch(err => {
-          console.log(err)
-          alert('Oops, something is wrong, could not add project!')
-          // this.$router.push({path: '/'})
+          projDescriptions.forEach(desc => {
+            descriptions.push(desc)
+          })
+
+          // create new formdata
+          let data = new FormData()
+          data.append('title', this.title)
+          data.append('_link', this.link)
+          data.append('repo', this.repo)
+          data.append('tag', this.tag)
+          data.append('releaseDate', this.releaseDate)
+          data.append('descriptions', JSON.stringify(descriptions))
+          data.append('imagePaths', JSON.stringify(imagePaths))
+          data.append('techs', JSON.stringify(this.techs))
+          data.append('newTechs', this.newTechs)
+
+          // append pictured to formdata
+          // for (var i = 0; i < this.files.length; i++) {
+          //   let file = this.files[i]
+          //   data.append('pictures', file.file)
+          // }
+
+          // show creating project toast
+          this.$toasted.show(`Creating project...`, this.toastOptions)
+          // submit formdata to server
+          ProfileService.addProject(data).then((res) => {
+            // show success toast
+            this.$toasted.show(`Project created :)`, this.toastOptions)
+            // on success reroute to project view
+            this.$router.push({path: `/portfolio/${res.data.id}`})
+          }).catch(err => {
+            console.log(err)
+            alert('Oops, something is wrong, could not add project!')
+            this.$router.push({path: '/'})
+          })
         })
       }
     }

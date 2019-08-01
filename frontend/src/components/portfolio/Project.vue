@@ -61,14 +61,14 @@
                 class="carousel black"
                 :interval="4000">
                 <v-carousel-item
-                  v-for="(image,i) in pictures"
+                  v-for="(image,i) in project.ImagePaths"
                   :key="i"
                   @error="missingImage"
                 >
                   <img
                     :id="'p' + i"
-                    :src="image.url"
-                    :alt="missingImage"
+                    :src="image.imagePath"
+                    alt=""
                   />
                 </v-carousel-item>
               </v-carousel>
@@ -180,8 +180,8 @@
               <h1 slot="title" class="name tech-names">Images</h1>
               <v-layout column slot="text">
                 <v-layout row wrap v-if="picsLoaded">
-                  <v-flex xs6 sm3 md2 lg2 class="thumbnail contacts-edit" v-for="image in changes.pictures" :key="image.id">
-                    <img :src="image.url" :alt="'thumbnail for image ' + image.id" />
+                  <v-flex xs6 sm3 md2 lg2 class="thumbnail contacts-edit" v-for="image in changes.ImagePaths" :key="image.id">
+                    <img :src="image.imagePath" :alt="'thumbnail for image ' + image.id" />
                     <!-- delete -->
                     <v-btn
                       fab
@@ -284,7 +284,14 @@ export default {
         required: value => !!value || 'Required',
         techs: value => (this.changes.Teches.length > 0 || this.newTechs.length > 0) || 'Required'
       },
-      files: []
+      files: [],
+      toastOptions: {
+        duration: 3000,
+        position: 'bottom-right',
+        closeOnSwipe: true,
+        theme: 'bubble',
+        className: 'pink darken-4'
+      }
     }
   },
   async created () {
@@ -295,10 +302,11 @@ export default {
       this.loaded = true
 
       // load pictures
-      this.loadPictures((pictures) => {
-        this.pictures = pictures
-        this.picsLoaded = true
-      })
+      if (this.project.ImagePaths.length > 0) this.picsLoaded = true
+      // this.loadPictures((pictures) => {
+      //   this.pictures = pictures
+      //   this.picsLoaded = true
+      // })
     })
   },
   mounted () {
@@ -378,7 +386,7 @@ export default {
 
       description = description.trim() // trim extra white space
 
-      this.changes = {...this.project, description: description, imagesToDelete: [], pictures: this.pictures} // add to this.changes
+      this.changes = {...this.project, description: description, imagesToDelete: []} // add to this.changes
     },
     // this function toggles to edit mode
     editProject () {
@@ -392,53 +400,91 @@ export default {
     // this marks the image specified by id for removal
     deleteImage (id) {
       this.changes.imagesToDelete.push(id)
-      let original = [...this.changes.pictures]
+      let original = [...this.changes.ImagePaths]
       _.remove(original, pic => pic.id === id)
-      this.changes.pictures = original
+      this.changes.ImagePaths = original
       // console.log('changes', this.changes)
     },
     // this function prepares data for submission
     prepareData () {
-      // split description into array
-      const projDescriptions = this.changes.description.trim().split('\n\n')
-      let descriptions = []
+      return new Promise((resolve, reject) => {
+        let imagePaths = []
+        let promises = []
 
-      projDescriptions.forEach(desc => {
-        descriptions.push(desc)
+        // show uploading images toast
+        this.$toasted.show(`Uploading images...`, this.toastOptions)
+
+        if (this.files.length > 0) {
+          this.files.forEach(file => {
+            promises.push(
+              new Promise((resolve, reject) => {
+                ProfileService.getSignedRequest(encodeURIComponent(file.file.name), file.file.type).then(res => {
+                  ProfileService.uploadFileToBucket(file.file, res.data.signedRequest, res.data.url).then(url => {
+                    resolve(url)
+                  }).catch(err => {
+                    reject(err)
+                  })
+                }).catch(err => {
+                  reject(err)
+                })
+              })
+            )
+          })
+        }
+
+        Promise.all(promises).then(urls => {
+          imagePaths = urls
+
+          // split description into array
+          const projDescriptions = this.changes.description.trim().split('\n\n')
+          let descriptions = []
+
+          projDescriptions.forEach(desc => {
+            descriptions.push(desc)
+          })
+
+          // create new formdata
+          var data = new FormData()
+          data.append('title', this.changes.title)
+          data.append('_link', this.changes._link)
+          data.append('repo', this.changes.repo)
+          data.append('tag', this.changes.tag)
+          data.append('release_date', this.changes.release_date)
+          data.append('descriptions', JSON.stringify(descriptions))
+          data.append('techs', JSON.stringify(this.changes.Teches))
+          data.append('newTechs', this.newTechs)
+          data.append('imagesToDelete', JSON.stringify(this.changes.imagesToDelete))
+          data.append('newImages', JSON.stringify(imagePaths))
+
+          // append pictured to formdata
+          // for (var i = 0; i < this.files.length; i++) {
+          //   let file = this.files[i]
+          //   data.append('photos', file.file)
+          // }
+
+          resolve(data)
+        })
       })
-
-      // create new formdata
-      var data = new FormData()
-      data.append('title', this.changes.title)
-      data.append('_link', this.changes._link)
-      data.append('repo', this.changes.repo)
-      data.append('tag', this.changes.tag)
-      data.append('release_date', this.changes.release_date)
-      data.append('descriptions', JSON.stringify(descriptions))
-      data.append('techs', JSON.stringify(this.changes.Teches))
-      data.append('newTechs', this.newTechs)
-      data.append('imagesToDelete', JSON.stringify(this.changes.imagesToDelete))
-
-      // append pictured to formdata
-      for (var i = 0; i < this.files.length; i++) {
-        let file = this.files[i]
-        data.append('photos', file.file)
-      }
-
-      return data
     },
     // this function saves the changes made
-    save () {
+    async save () {
       if (this.$refs.form.validate()) {
         console.log('files', this.files)
         console.log('save', this.changes)
 
+        // show updating project toast
+        this.$toasted.show(`Updating project...`, this.toastOptions)
+
         // prepare data
-        let data = this.prepareData()
-        console.log('data', data)
+        let data = await this.prepareData()
+        for (var pair of data.entries()) {
+          console.log(pair[0], pair[1])
+        }
 
         // submit formdata to server
         ProfileService.editProject(this.project.id, data).then((res) => {
+          // show success toast
+          this.$toasted.show(`Project updated :)`, this.toastOptions)
           // on success reroute to project view
           // this.$router.push({path: `/portfolio/${res.data.id}`})
           this.slideEditOptions() // slide edit components away

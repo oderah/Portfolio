@@ -1,4 +1,5 @@
 import Api from '@/services/Api'
+import axios from 'axios'
 
 export default {
   getProfile () {
@@ -36,10 +37,20 @@ export default {
     return Api().get('techs')
   },
   editProject (id, data) {
-    return Api().post(`portfolio/edit/${id}`, data, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+    return Api().post(`portfolio/edit/${id}`, data)
+  },
+  getSignedRequest (fileName, fileType) {
+    return Api().get(`sign-s3?fileName=${fileName}&fileType=${fileType}`)
+  },
+  uploadFileToBucket (file, signedRequest, url) {
+    return new Promise((resolve, reject) => {
+      axios.put(signedRequest, file).then(res => {
+        console.log(res)
+        resolve(url)
+      }).catch(err => {
+        console.log(err)
+        reject(err)
+      })
     })
   }
 }

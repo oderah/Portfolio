@@ -9,13 +9,13 @@
       :interval="delay(index)"
       >
       <v-carousel-item
-        v-for="(image,i) in project.pictures"
+        v-for="(image,i) in project.ImagePaths"
         :key="i"
         @error="missingImage"
       >
         <img
           :id="'p' + project.id + '_' + image.id"
-          :src="image"
+          :src="image.imagePath"
           :alt="() => (`Project ${project.title}, image number ${i + 1}`)"
         />
       </v-carousel-item>
@@ -72,14 +72,15 @@ export default {
   },
   mounted () {
     this.factor = this.index
-    let count = 0
+    // let count = 0
     // load pictures
-    this.loadPictures(() => {
-      count++
-      if (count === this.project.ImagePaths.length) { // all pictures loaded
-        this.picturesLoaded = true // set picturesLoaded
-      }
-    })
+    if (this.project.ImagePaths.length > 0) this.picturesLoaded = true
+    // this.loadPictures(() => {
+    //   count++
+    //   if (count === this.project.ImagePaths.length) { // all pictures loaded
+    //     this.picturesLoaded = true // set picturesLoaded
+    //   }
+    // })
   },
   components: {
     Panel
