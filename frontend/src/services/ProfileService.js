@@ -8,8 +8,22 @@ export default {
   setProfile (profile) {
     return Api().post('about', profile)
   },
-  setProfilePic (base64) {
-    return Api().post('about/pic', {base64})
+  setProfilePic (url) {
+    return Api().post('about/pic', {profilePicture: url})
+  },
+  uploadProfilePic (file) {
+    // return Api().post('about/pic', {base64})
+    return new Promise((resolve, reject) => {
+      this.getSignedRequest(file.name, file.type).then(res => {
+        this.uploadFileToBucket(file, res.data.signedRequest, res.data.url).then(url => {
+          resolve(url)
+        }).catch(err => {
+          reject(err)
+        })
+      }).catch(err => {
+        reject(err)
+      })
+    })
   },
   getProfilePic () {
     return Api().get('about/pic')
@@ -45,7 +59,6 @@ export default {
   uploadFileToBucket (file, signedRequest, url) {
     return new Promise((resolve, reject) => {
       axios.put(signedRequest, file).then(res => {
-        console.log(res)
         resolve(url)
       }).catch(err => {
         console.log(err)

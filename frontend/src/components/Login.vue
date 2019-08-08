@@ -75,14 +75,6 @@ export default {
           password: this.password
         })
 
-        let toastOptions = {
-          duration: 3000,
-          position: 'bottom-right',
-          closeOnSwipe: true,
-          theme: 'bubble',
-          className: 'pink darken-4'
-        }
-
         if (response.data) {
           let admin = {
             email: response.data.admin.email,
@@ -93,12 +85,12 @@ export default {
           this.$cookie.set('admin', JSON.stringify(admin), {expires: 7})
 
           // show log in success toast
-          this.$toasted.show(`Signed in as ${admin.username} :)`, toastOptions)
+          this.$toasted.show(`<i class="material-icons">tag_faces</i> Signed in as ${admin.username}`, this.$store.state.successToast)
 
           this.$router.push({path: this.from})
         } else {
           // show log in failure toast
-          this.$toasted.show('Invalid Credentials!!', toastOptions)
+          this.$toasted.show('Invalid Credentials!!', this.$store.state.errorToast)
         }
       } catch (err) {
         console.log(err)

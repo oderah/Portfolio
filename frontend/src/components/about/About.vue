@@ -78,8 +78,9 @@ export default {
     }
   },
   async mounted () {
-    this.reloadProfile()
-    window.scrollTo(0, 0)
+    this.reloadProfile().then(res => {
+      window.scrollTo(0, 0)
+    })
   },
   components: {
     Panel, Name, Education, Skills, Technologies
@@ -95,20 +96,50 @@ export default {
     }, 300)
   },
   methods: {
-    async reloadProfile () {
-      this.profile = (await this.getProfile()).data.profile
-      this.loaded = true
+    reloadProfile () {
+      // this.loaded = false
+      return new Promise((resolve, reject) => {
+        this.getProfile().then(res => {
+          this.profile = res.data.profile
+          this.loaded = true
+
+          resolve(res.data.profile)
+        }).catch(err => {
+          console.log(err)
+          reject(err)
+        })
+      })
+      // this.profile = (await this.getProfile()).data.profile
     },
-    async getProfile () {
-      const profile = await ProfileService.getProfile()
-      return profile
+    getProfile () {
+      // const profile = await ProfileService.getProfile()
+      // return profile
+      return new Promise((resolve, reject) => {
+        ProfileService.getProfile().then(profile => {
+          resolve(profile)
+        }).catch(err => {
+          reject(err)
+        })
+      })
     },
-    async update (abouts) {
-      const response = await ProfileService.setProfile({abouts: abouts})
-      if (response.data.msg === true) {
-        this.reloadProfile()
-      }
-      return response
+    update (abouts) {
+      // show uploading titles toast
+      this.$toasted.show(`Uploading abouts...`, this.$store.state.toast)
+
+      ProfileService.setProfile({abouts: abouts}).then(response => {
+        if (response.data.msg === true) {
+          setTimeout(async () => {
+            await this.reloadProfile()
+            // show updated abouts toast
+            this.$toasted.show(`Updated abouts`, this.$store.state.successToast)
+            this.done()
+          }, 1000)
+        }
+      }).catch(err => {
+        // show error toast
+        this.$toasted.show(`Oops something went wrong`, this.$store.state.errorToast)
+        console.log(err)
+      })
     },
     editText () {
       this.profile.abouts.forEach(about => {

@@ -284,14 +284,7 @@ export default {
         required: value => !!value || 'Required',
         techs: value => (this.changes.Teches.length > 0 || this.newTechs.length > 0) || 'Required'
       },
-      files: [],
-      toastOptions: {
-        duration: 3000,
-        position: 'bottom-right',
-        closeOnSwipe: true,
-        theme: 'bubble',
-        className: 'pink darken-4'
-      }
+      files: []
     }
   },
   async created () {
@@ -412,7 +405,7 @@ export default {
         let promises = []
 
         // show uploading images toast
-        this.$toasted.show(`Uploading images...`, this.toastOptions)
+        this.$toasted.show(`Uploading images...`, this.$store.state.toast)
 
         if (this.files.length > 0) {
           this.files.forEach(file => {
@@ -473,7 +466,7 @@ export default {
         console.log('save', this.changes)
 
         // show updating project toast
-        this.$toasted.show(`Updating project...`, this.toastOptions)
+        this.$toasted.show(`Updating project ${this.project.title}...`, this.$store.state.toast)
 
         // prepare data
         let data = await this.prepareData()
@@ -484,7 +477,7 @@ export default {
         // submit formdata to server
         ProfileService.editProject(this.project.id, data).then((res) => {
           // show success toast
-          this.$toasted.show(`Project updated :)`, this.toastOptions)
+          this.$toasted.show(`Project updated :)`, this.$store.state.successToast)
           // on success reroute to project view
           // this.$router.push({path: `/portfolio/${res.data.id}`})
           this.slideEditOptions() // slide edit components away
@@ -493,7 +486,7 @@ export default {
           }, 300)
         }).catch(err => {
           console.log(err)
-          alert('Oops, something is wrong, could not add project!')
+          this.$toasted.show('Oops, something is wrong, could not add project!', this.$store.state.errorToast)
         })
       }
     },
@@ -510,8 +503,17 @@ export default {
     // this function deletes the project specified by id
     deleteProject () {
       if (confirm('Are you sure you want to delete this project?')) {
+        // show deleting toast
+        this.$toasted.show(`Deleting project: ${this.project.title}`, this.$store.state.toast)
+
         ProfileService.deleteProject(this.project.id).then(() => {
+          // show deleted toast
+          this.$toasted.show(`Project deleted`, this.$store.state.successToast)
           this.$router.push({path: '/portfolio'})
+        }).catch(err => {
+          // show error toast
+          this.$toasted.show(`Oops something went wrong!!`, this.$store.state.errorToast)
+          console.log(err)
         })
       }
     },

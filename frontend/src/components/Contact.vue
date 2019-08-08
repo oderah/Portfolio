@@ -229,8 +229,13 @@ export default {
       this.edit = true
     },
     async update () {
+      // show updating contacts toast
+      this.$toasted.show(`Uploading contact info...`, this.$store.state.toast)
+
       const response = await ProfileService.setProfile({profile: this.contactInfo, socials: this.socials})
       if (response.data.msg === true) {
+        // show updated contacts toast
+        this.$toasted.show(`Updated contact info`, this.$store.state.successToast)
         setTimeout(async () => {
           this.reloadProfile()
         }, 100)

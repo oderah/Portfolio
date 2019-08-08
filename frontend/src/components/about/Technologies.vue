@@ -65,18 +65,26 @@ export default {
         this.techs += tech.tech + ', '
       })
       this.techs = this.techs.substring(0, this.techs.length - 2)
-      console.log(this.techs)
       this.edit = true
     },
-    async update (techs) {
-      const response = await ProfileService.setProfile({techs: techs})
-      if (response.data.msg === true) {
-        setTimeout(async () => {
-          await this.$emit('update')
-        }, 100)
-        this.done()
-      }
-      return response
+    update (techs) {
+      // show uploading techs toast
+      this.$toasted.show(`Uploading techs...`, this.$store.state.toast)
+
+      ProfileService.setProfile({techs: techs}).then(response => {
+        if (response.data.msg === true) {
+          setTimeout(async () => {
+            await this.$emit('update')
+            // show updated techs toast
+            this.$toasted.show(`Updated techs`, this.$store.state.successToast)
+            this.done()
+          }, 1000)
+        }
+      }).catch(err => {
+        // show error toast
+        this.$toasted.show(`Oops something went wrong`, this.$store.state.errorToast)
+        console.log(err)
+      })
     },
     async saveTechs () {
       const newTechs = this.techs.trim().split(', ')
@@ -85,8 +93,7 @@ export default {
         payload.push({'tech': tech})
       })
 
-      const response = await this.update(payload)
-      console.log('response savTechs : ', response)
+      await this.update(payload)
     },
     done () {
       this.techs = ''

@@ -66,15 +66,24 @@ export default {
       console.log(this.titles)
       this.edit = true
     },
-    async update (titles) {
-      const response = await ProfileService.setProfile({titles: titles})
-      if (response.data.msg === true) {
-        setTimeout(async () => {
-          await this.$emit('update')
-        }, 100)
-        this.done()
-      }
-      return response
+    update (titles) {
+      // show uploading titles toast
+      this.$toasted.show(`Uploading titles...`, this.$store.state.toast)
+
+      ProfileService.setProfile({titles: titles}).then(response => {
+        if (response.data.msg === true) {
+          setTimeout(async () => {
+            await this.$emit('update')
+            // show updated titles toast
+            this.$toasted.show(`Updated titles`, this.$store.state.successToast)
+            this.done()
+          }, 1000)
+        }
+      }).catch(err => {
+        // show error toast
+        this.$toasted.show(`Oops something went wrong`, this.$store.state.errorToast)
+        console.log(err)
+      })
     },
     async saveTitles () {
       const newTitles = this.titles.trim().split(', ')
@@ -83,10 +92,9 @@ export default {
         payload.push({'title': title})
       })
 
-      const response = await this.update(payload)
-      console.log('response savTitles : ', response)
+      this.update(payload)
     },
-    done () {
+    async done () {
       this.titles = ''
       this.edit = false
     }

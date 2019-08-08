@@ -102,12 +102,20 @@ export default {
       if (confirm('Are you sure you want to delete this project?')) {
         this.projectsLoaded = false // set projectsLoaded
         this.picturesLoaded = false // set picturesLoaded
+
+        // show deleting toast
+        this.$toasted.show(`Deleting project: ${this.project.title}`, this.$store.state.toast)
         ProfileService.deleteProject(id).then(res => {
+          // show deleted toast
+          this.$toasted.show(`Project deleted`, this.$store.state.successToast)
           this.slideProject(this.project.id)
 
           setTimeout(() => {
             this.reloadProjects()
           }, 300)
+        }).catch(err => {
+          this.$toasted.show(`Oops something went wrong!!`, this.$store.state.errorToast)
+          console.log(err)
         })
       }
     },

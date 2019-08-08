@@ -38,6 +38,7 @@ export default {
       loaded: false,
       hovering: false,
       file: null,
+      actualFile: null,
       profilePic: null,
       defaultPic: require('@/assets/landing.svg')
     }
@@ -51,6 +52,8 @@ export default {
       ProfileService.getProfilePic().then(res => {
         this.profilePic = res.data
         this.loaded = true
+      }).catch(err => {
+        console.log(err)
       })
     },
     hover () {
@@ -72,20 +75,33 @@ export default {
 
       const res = await image2base64(url)
       this.file = `data:image/png;base64, ${res}`
+      this.actualFile = e.target.files[0]
     },
     // this function saves any changes made
     saveChanges () {
-      if (this.file !== null) {
-        ProfileService.setProfilePic(this.file).then(res => {
-          this.$router.go() // reload page
+      let up2backend = (url) => {
+        ProfileService.setProfilePic(url).then(res => {
+          // show success toast
+          this.$toasted.show(`<i class="material-icons">tag_faces</i> Updated profile picture`, this.$store.state.successToast)
+          // this.$router.go() // reload page
         }).catch(err => {
           console.log(err)
+          this.$toasted.show(`FAILED!!!`, this.$store.state.errorToast)
         })
+      }
+      // show updating profile picture toast
+      this.$toasted.show(`Updating profile picture...`, this.$store.state.toast)
+      if (this.file !== null) {
+        ProfileService.uploadProfilePic(this.actualFile).then(url => {
+          up2backend(url)
+        })
+      } else {
+        up2backend(null)
       }
     },
     deleteProfilePic () {
       this.profilePic = '' // remove current picture
-      this.file = '' // set empty string as new profile picture
+      this.file = null // set null as new profile picture
     },
     // mouseover function
     mouseover () {

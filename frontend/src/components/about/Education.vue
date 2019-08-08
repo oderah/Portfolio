@@ -148,22 +148,29 @@ export default {
       this.profile.programs.forEach(program => {
         this.programs.push(program)
       })
-      console.log('Programss: ', this.programs)
       this.edit = true
     },
-    async update (programs) {
-      const response = await ProfileService.setProfile({programs: this.programs})
-      if (response.data.msg === true) {
-        setTimeout(async () => {
-          await this.$emit('update')
-        }, 100)
-        this.done()
-      }
-      return response
+    update (programs) {
+      // show uploading programs toast
+      this.$toasted.show(`Uploading programs...`, this.$store.state.toast)
+
+      ProfileService.setProfile({programs: programs}).then(response => {
+        if (response.data.msg === true) {
+          setTimeout(async () => {
+            await this.$emit('update')
+            // show updated programs toast
+            this.$toasted.show(`Updated programs`, this.$store.state.successToast)
+            this.done()
+          }, 1000)
+        }
+      }).catch(err => {
+        // show error toast
+        this.$toasted.show(`Oops something went wrong`, this.$store.state.errorToast)
+        console.log(err)
+      })
     },
     async savePrograms () {
-      const response = await this.update()
-      console.log('response savPrograms : ', response)
+      await this.update(this.programs)
       this.done()
     },
     done () {

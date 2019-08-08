@@ -86,13 +86,7 @@ export default {
       this.$cookie.delete('admin')
 
       // show goodbye toast
-      this.$toasted.show(`Bye ${this.$store.state.admin.username} :)`, {
-        duration: 3000,
-        position: 'bottom-right',
-        closeOnSwipe: true,
-        theme: 'bubble',
-        className: 'pink darken-4'
-      })
+      this.$toasted.show(`<i class="material-icons">tag_faces</i> Bye ${this.$store.state.admin.username}`, this.$store.state.successToast)
 
       this.$store.dispatch('setAdmin', null)
     }

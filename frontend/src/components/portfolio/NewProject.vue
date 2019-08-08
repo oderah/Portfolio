@@ -145,13 +145,6 @@ export default {
       createNewTech: false,
       rules: {
         required: value => !!value || 'Required'
-      },
-      toastOptions: {
-        duration: 3000,
-        position: 'bottom-right',
-        closeOnSwipe: true,
-        theme: 'bubble',
-        className: 'pink darken-4'
       }
     }
   },
@@ -180,7 +173,7 @@ export default {
         let promises = []
 
         // show uploading images toast
-        this.$toasted.show(`Uploading images...`, this.toastOptions)
+        this.$toasted.show(`Uploading images...`, this.$store.state.toast)
 
         this.files.forEach(file => {
           promises.push(
@@ -228,16 +221,16 @@ export default {
           // }
 
           // show creating project toast
-          this.$toasted.show(`Creating project...`, this.toastOptions)
+          this.$toasted.show(`Creating project ${this.title}...`, this.$store.state.toast)
           // submit formdata to server
           ProfileService.addProject(data).then((res) => {
             // show success toast
-            this.$toasted.show(`Project created :)`, this.toastOptions)
+            this.$toasted.show(`Project created :)`, this.$store.state.successToast)
             // on success reroute to project view
             this.$router.push({path: `/portfolio/${res.data.id}`})
           }).catch(err => {
             console.log(err)
-            alert('Oops, something is wrong, could not add project!')
+            this.$toasted.show('Oops, something is wrong, could not add project!', this.$store.state.errorToast)
             this.$router.push({path: '/'})
           })
         })

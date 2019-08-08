@@ -62,18 +62,26 @@ export default {
         this.skills += skill.skill + ', '
       })
       this.skills = this.skills.substring(0, this.skills.length - 2)
-      console.log(this.skills)
       this.edit = true
     },
-    async update (skills) {
-      const response = await ProfileService.setProfile({skills: skills})
-      if (response.data.msg === true) {
-        setTimeout(async () => {
-          await this.$emit('update')
-        }, 100)
-        this.done()
-      }
-      return response
+    update (skills) {
+      // show uploading skills toast
+      this.$toasted.show(`Uploading skills...`, this.$store.state.toast)
+
+      ProfileService.setProfile({skills: skills}).then(response => {
+        if (response.data.msg === true) {
+          setTimeout(async () => {
+            await this.$emit('update')
+            // show updated titles toast
+            this.$toasted.show(`Updated skills`, this.$store.state.successToast)
+            this.done()
+          }, 1000)
+        }
+      }).catch(err => {
+        // show error toast
+        this.$toasted.show(`Oops something went wrong`, this.$store.state.errorToast)
+        console.log(err)
+      })
     },
     async saveSkills () {
       const newSkills = this.skills.trim().split(', ')
@@ -82,8 +90,7 @@ export default {
         payload.push({'skill': skill})
       })
 
-      const response = await this.update(payload)
-      console.log('response savSkills : ', response)
+      await this.update(payload)
     },
     done () {
       this.skills = ''
