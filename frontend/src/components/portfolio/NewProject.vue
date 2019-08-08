@@ -166,8 +166,6 @@ export default {
     },
     // this function adds the new project
     async addProject () {
-      console.log('FILE 1 =>', this.files[0].file)
-
       if (this.$refs.form.validate()) { // validate form
         let imagePaths = []
         let promises = []

@@ -295,11 +295,12 @@ export default {
       this.loaded = true
 
       // load pictures
-      if (this.project.ImagePaths.length > 0) this.picsLoaded = true
-      // this.loadPictures((pictures) => {
-      //   this.pictures = pictures
-      //   this.picsLoaded = true
-      // })
+      if (this.project.ImagePaths.length > 0) {
+        this.picsLoaded = true
+      } else {
+        this.picsLoaded = true
+        this.noPics = true
+      }
     })
   },
   mounted () {
